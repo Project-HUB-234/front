@@ -1,0 +1,187 @@
+<app-navbar></app-navbar>
+<mat-card class="profile-card1">
+  <div class="profile-body-container">
+    <!-- Left Column: Profile + About + Experience -->
+    <div class="left-content">
+     <div class="profile-card">
+  <div class="cover-image"></div>
+
+  <div class="profile-header">
+    <img src="assets/images.jpg" alt="Profile" class="profile-img" />
+    <div class="profile-info">
+      <h2>Sam Lanson <mat-icon class="verified">verified</mat-icon></h2>
+      <p>250 connections</p>
+      <div class="details">
+        <mat-icon>work</mat-icon> Lead Developer
+        <mat-icon>location_on</mat-icon> New Hampshire
+        <mat-icon>calendar_today</mat-icon> Joined on Nov 26, 2019
+      </div>
+    </div>
+    <div class="header-actions">
+      <button mat-stroked-button color="primary">Edit profile</button>
+      <button mat-icon-button><mat-icon>more_vert</mat-icon></button>
+    </div>
+  </div>
+
+  <mat-tab-group>
+    <mat-tab label="Feed">
+        <div class="post-container mat-elevation-z2">
+  <mat-form-field appearance="outline" class="full-width">
+    <textarea matInput placeholder="Share your thoughts..." cdkTextareaAutosize></textarea>
+  </mat-form-field>
+  <div class="photos-section mt-4" *ngIf="postedPhotos.length > 0">
+  <div class="photos-grid">
+    <div class="photo-item" *ngFor="let photo of postedPhotos">
+      <img [src]="photo" class="img-fluid" alt="Posted photo">
+    </div>
+  </div>
+</div>
+  <div class="post-options">
+    <button mat-button (click)="openPhotoUpload()">
+      <mat-icon>image</mat-icon>
+      Photo
+    </button>
+    <button mat-button>
+      <mat-icon>videocam</mat-icon>
+      Video
+    </button>
+    <button mat-button>
+      <mat-icon>event</mat-icon>
+      Event
+    </button>
+   <button type="button" class="btn btn-primary" [ngStyle]="{'color': 'white'}">Post</button>
+  </div>
+</div>
+
+<mat-card class="post-card">
+  <!-- Post Header -->
+  <div class="post-header">
+    <img src="assets/images.jpg" alt="Frances Guerrero" class="post-avatar">
+    <div class="post-user-info">
+      <h3>Frances Guerrero</h3>
+      <div class="post-meta">
+        <span class="post-time">8 hours ago</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Post Content -->
+  <div class="post-content">
+    <p>I'm thrilled to share that I've completed a graduate certificate course in project management with the president's honor roll.</p>
+  </div>
+
+  <!-- Post Actions -->
+  <div class="post-actions">
+    <div class="likes-count">Liked (56)</div>
+    <div class="action-buttons">
+      <button mat-button>
+        <mat-icon>chat_bubble_outline</mat-icon>
+        <span>Comments (12)</span>
+      </button>
+      <button mat-button>
+        <mat-icon>share</mat-icon>
+        <span>Share (3)</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Comment Input -->
+  <div class="comment-input">
+    <mat-form-field appearance="outline" class="full-width">
+      <input matInput placeholder="Add a comment...">
+    </mat-form-field>
+  </div>
+
+  <!-- Existing Comment -->
+  <div class="existing-comment">
+    <div class="comment-header">
+      <img src="assets/images.jpg" alt="Samuel Bishop" class="comment-avatar">
+      <div class="comment-user-info">
+        <h4>Samuel Bishop</h4>
+        <span class="comment-time">9 hours ago</span>
+      </div>
+    </div>
+    <div class="comment-text">
+      <p>Removed demands expense account in outward tedious do. Particular way thoroughly unaffected projection.</p>
+    </div>
+  </div>
+
+  <!-- Post Footer -->
+  <div class="post-footer">
+    <span>1 Bar</span>
+    <span>2 Bambi</span>
+    <span>Visual 7 remises</span>
+  </div>
+</mat-card>
+
+    </mat-tab>
+    <mat-tab label="About"></mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        Connections 
+      </ng-template>
+    </mat-tab>
+    <mat-tab label="Media"></mat-tab>
+  </mat-tab-group>
+</div>
+
+    </div>
+
+
+    <div class="modal fade" id="photoUploadModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p class="text-muted mb-3">chose a photo ...</p>
+        
+        <div class="upload-area" (click)="fileInput.click()">
+          <input #fileInput type="file" accept="image/*" (change)="onFileSelected($event)" style="display: none;">
+          <mat-icon class="upload-icon">cloud_upload</mat-icon>
+          <p>Upload attachment</p>
+          <p class="text-muted">Drag here or click to upload photo.</p>
+        </div>
+        
+        <div class="preview-area mt-3" *ngIf="selectedImage">
+          <img [src]="selectedImage" class="img-thumbnail" alt="Preview">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" [disabled]="!selectedImage" (click)="postPhoto()">Add</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <!-- Right Column: Tabs -->
+    <div class="right-sidebar">
+
+         <mat-card class="about-card">
+        <h3>About</h3>
+        <p>
+          He moonlights difficult engrossed it, sportsmen. Interested has all
+          Devonshire difficulty gay assistance joy.
+        </p>
+        <p><mat-icon>cake</mat-icon> Born: <strong>October 20, 1990</strong></p>
+        <p><mat-icon>favorite_border</mat-icon> Status: <strong>Single</strong></p>
+        <p><mat-icon>email</mat-icon> Email: <strong>abcxyz.com</strong></p>
+      </mat-card>
+
+      <mat-card class="experience-card">
+        <h3>Experience</h3>
+        <div class="job">
+          <mat-icon class="job-icon">chat</mat-icon>
+          <div>
+            <p><strong>Apple Computer, Inc.</strong></p>
+            <p>May 2015 – Present Employment</p>
+            <p>Duration: 8 mos</p>
+          </div>
+        </div>
+      </mat-card>
+    
+    </div>
+  </div>
+</mat-card>

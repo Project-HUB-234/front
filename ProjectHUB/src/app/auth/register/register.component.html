@@ -1,0 +1,123 @@
+<div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+    data-sidebar-position="fixed" data-header-position="fixed">
+    <div
+      class="position-relative overflow-hidden text-bg-light min-vh-100 d-flex align-items-center justify-content-center">
+      <div class="d-flex align-items-center justify-content-center w-100">
+        <div class="row justify-content-center w-100">
+          <div class="col-md-8 col-lg-6 col-xxl-3">
+            <div class="card mb-0">
+              <div class="card-body">
+                <a href="./index.html" class="text-nowrap logo-img text-center d-block py-3 w-100">
+                  <img src="../../../assets/admin/images/logos/logo.svg" alt="">
+                </a>
+                <p class="text-center">Your Social Campaigns</p>
+                <form [formGroup]="registerForm" (ngSubmit)="submit()">
+                   <div class="row mb-3">
+                  <div class="col-md-6">
+                    <label for="FirstName" class="form-label">First Name</label>
+                    <input type="text" id="FirstName" class="form-control" formControlName="FirstName"
+                      [ngClass]="{ 'is-invalid': registerForm.get('FirstName')?.touched && registerForm.get('FirstName')?.invalid }">
+                    <div *ngIf="registerForm.get('FirstName')?.touched && registerForm.get('FirstName')?.invalid" class="text-danger">
+                      First name is required.
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label for="LastName" class="form-label">Last Name</label>
+                    <input type="text" id="LastName" class="form-control" formControlName="LastName"
+                      [ngClass]="{ 'is-invalid': registerForm.get('LastName')?.touched && registerForm.get('LastName')?.invalid }">
+                    <div *ngIf="registerForm.get('LastName')?.touched && registerForm.get('LastName')?.invalid" class="text-danger">
+                      Last name is required.
+                    </div>
+                  </div>
+                </div>
+                   <div class="mb-3">
+                  <label for="Email" class="form-label">Email Address</label>
+                  <input type="email" id="Email" class="form-control" formControlName="Email"
+                    [ngClass]="{ 'is-invalid': registerForm.get('Email')?.touched && registerForm.get('Email')?.invalid }">
+                  <div *ngIf="registerForm.get('Email')?.touched && registerForm.get('Email')?.invalid" class="text-danger">
+                    <span *ngIf="registerForm.get('Email')?.hasError('required')">Email is required.</span>
+                    <span *ngIf="registerForm.get('Email')?.hasError('email')">Enter a valid email.</span>
+                  </div>
+                </div>
+               
+              <div class="mb-3 position-relative">
+                <label for="HashedPassword" class="form-label">Password</label>
+                <input
+            [type]="passwordVisible ? 'text' : 'password'"
+            id="HashedPassword"
+            class="form-control pe-5"
+            formControlName="HashedPassword"
+            [ngClass]="{
+                'is-invalid': registerForm.get('HashedPassword')?.touched &&
+                            registerForm.get('HashedPassword')?.invalid
+            }"
+            />
+
+            <span
+                class="position-absolute d-flex align-items-center"
+                style="top: 50%; bottom: 0; right: 30px; cursor: pointer;"
+                (click)="togglePasswordVisibility()"
+            >
+                <i
+                class="zmdi"
+                [ngClass]="passwordVisible ? 'zmdi-eye-off' : 'zmdi-eye'"
+                style="font-size: 1.3rem;"
+                ></i>
+            </span>
+
+               
+                </div>
+            <div *ngIf="registerForm.get('HashedPassword')?.touched && registerForm.get('HashedPassword')?.invalid" class="text-danger">
+                    <div *ngIf="registerForm.get('HashedPassword')?.hasError('required')">Password is required.</div>
+                    <div *ngIf="registerForm.get('HashedPassword')?.hasError('minlength')">Min 8 characters required.</div>
+                    <div *ngIf="registerForm.get('HashedPassword')?.hasError('pattern')">Must include uppercase, lowercase, number, and symbol.</div>
+                </div>
+
+              <div class="mb-4 position-relative">
+                <label for="ConfirmPassword" class="form-label">Confirm Password</label>
+               
+                 <input
+                [type]="confirmPasswordVisible ? 'text' : 'password'"
+                id="ConfirmPassword"
+                class="form-control pe-5"
+                formControlName="ConfirmPassword"
+                [ngClass]="{
+                'is-invalid': registerForm.get('ConfirmPassword')?.touched &&
+                                registerForm.hasError('passwordMismatch')
+                }"
+            />
+            <span
+                class="position-absolute d-flex align-items-center"
+                style="top: 50%; bottom: 0; right: 30px;  cursor: pointer;"
+                (click)="toggleConfirmPasswordVisibility()"
+            >
+                <i
+                class="zmdi"
+                [ngClass]="confirmPasswordVisible ? 'zmdi-eye-off' : 'zmdi-eye'"
+                style="font-size: 1.3rem;"
+                ></i>
+          </span>  
+                </div>
+                <div class="text-danger"
+                    *ngIf="registerForm.get('ConfirmPassword')?.touched &&
+                            registerForm.hasError('passwordMismatch')">
+                    Passwords do not match.
+                </div>
+
+
+                    <button class="btn btn-primary w-100 py-8 fs-4 mb-4 rounded-2" type="submit">
+                        Sign Up
+                    </button>               
+                     <div class="d-flex align-items-center justify-content-center">
+                    <p class="fs-4 mb-0 fw-bold">Already have an Account?</p>
+                    <a class="text-primary fw-bold ms-2" routerLink="/security/login">Sign In</a>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

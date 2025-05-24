@@ -14,6 +14,11 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { FormsModule } from '@angular/forms';
+import { MatMenuModule } from '@angular/material/menu';
+import { TimeagoModule } from 'ngx-timeago';
 
 @NgModule({
   declarations: [
@@ -31,7 +36,12 @@ import { ReactiveFormsModule } from '@angular/forms';
     MatInputModule,
     MatListModule,
     ReactiveFormsModule,
+    MatOptionModule,
+    MatSelectModule,
+    FormsModule,
     MatCheckboxModule,
+    TimeagoModule.forRoot(),
+    MatMenuModule,
        ToastrModule.forRoot({
       positionClass: 'toast-bottom-right',
       preventDuplicates: true,
@@ -48,7 +58,12 @@ import { ReactiveFormsModule } from '@angular/forms';
     MatInputModule,
     MatListModule,
     MatCheckboxModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatOptionModule,
+    MatSelectModule,
+    FormsModule,
+    MatMenuModule,
+    TimeagoModule,
   ]
 })
 export class SharedModule { }

@@ -2,9 +2,9 @@ import { Component, ElementRef, OnInit, TemplateRef, ViewChild,HostListener   } 
 import { HomeService } from '../services/home.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
 import Swal from 'sweetalert2';
 import { TimeagoModule } from 'ngx-timeago';
+import { MatDialog,MatDialogRef  } from '@angular/material/dialog';
 
 declare var bootstrap: any;
 
@@ -16,8 +16,14 @@ declare var bootstrap: any;
 export class ProfileComponent {
  
   private modal: any;
+  dialogRef!: MatDialogRef<any>;
 
-  constructor(private homeService : HomeService , private toastr:ToastrService) {}
+  constructor(private homeService : HomeService, private toastr:ToastrService ,public dialog: MatDialog,) {}
+  @ViewChild('callEditPostDialog') EditPostDialog !: TemplateRef<any>;
+   @ViewChild('callDeletePostDialog') DeletePostDialog!: TemplateRef<any>;
+   @ViewChild('callEditCommentDialog') EditCommentDialog !: TemplateRef<any>;
+    @ViewChild('callDeleteCommentDialog') DeleteCommentDialog !: TemplateRef<any>;
+
 
   ngAfterViewInit() {
     this.modal = new bootstrap.Modal(document.getElementById('photoUploadModal'));
@@ -146,6 +152,70 @@ postPhoto() {
     }
   });
 }
+
+
+
+
+  openEditPostDialog(post:any) {
+     this.dialog.open(this.EditPostDialog)
+   }
+   saveEditPost(data:any){
+
+   }
+ openDeletePostDialog(postId:number) {
+     this.dialog.open(this.DeletePostDialog)
+   } 
+   confirmDeletePost(){
+
+   }
+
+//COMMENT
+   commentImage: string | ArrayBuffer | null = null;
+  commentText: string = '';
+onCommentImageSelected(event: any): void {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = e => this.commentImage = reader.result;
+    reader.readAsDataURL(file);
+  }
+}
+sendComment(): void {}
+
+removeCommentImage(): void {
+  this.commentImage = null;
+}
+
+editedCommentText: string = '';
+editedCommentPhoto: string | ArrayBuffer | null = null;
+
+onPhotoSelected(event: Event): void {
+  const input = event.target as HTMLInputElement;
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = e => this.editedCommentPhoto = reader.result;
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+removePhoto(): void {
+  this.editedCommentPhoto = null;
+}
+
+   openEditCommentDialog(comment:any) {
+     this.dialog.open(this.EditCommentDialog)
+   }
+   saveEditedComment(){
+    
+   }
+
+   openDeleteCommentDialog(commentId:number) {
+     this.dialog.open(this.DeleteCommentDialog)
+   }
+   confirmDeleteComment(){
+
+   }
+
 
 commentVisibility: { [postId: number]: boolean } = {};
 likedPosts: { [postId: number]: boolean } = {};

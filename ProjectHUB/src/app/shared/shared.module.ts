@@ -19,6 +19,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
 import { MatMenuModule } from '@angular/material/menu';
 import { TimeagoModule } from 'ngx-timeago';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @NgModule({
   declarations: [
@@ -46,6 +48,8 @@ import { TimeagoModule } from 'ngx-timeago';
       positionClass: 'toast-bottom-right',
       preventDuplicates: true,
     }),
+    MatDialogModule,
+    MatAutocompleteModule
   ],
   exports: [
     MatCardModule,
@@ -64,6 +68,8 @@ import { TimeagoModule } from 'ngx-timeago';
     FormsModule,
     MatMenuModule,
     TimeagoModule,
+    MatDialogModule,
+    MatAutocompleteModule
   ]
 })
 export class SharedModule { }

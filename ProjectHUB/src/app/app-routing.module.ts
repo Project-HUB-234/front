@@ -4,6 +4,7 @@ import { HomeComponent } from './home/home.component';
 import { AdminModule } from './admin/admin.module';
 import { AuthModule } from './auth/auth.module';
 import { ProfileComponent } from './profile/profile.component';
+import { EditProfileComponent } from './edit-profile/edit-profile.component';
 
  const routes:Routes=[
   {
@@ -18,6 +19,10 @@ import { ProfileComponent } from './profile/profile.component';
     {
     path:'profile',
     component: ProfileComponent
+  },
+     {
+    path:'updateprofile',
+    component: EditProfileComponent
   },
   {
     path:'security',

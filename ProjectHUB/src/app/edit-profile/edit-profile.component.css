@@ -1,0 +1,18 @@
+img.img-thumbnail {
+  border-radius: 50%;
+  object-fit: cover;
+  width: 120px;
+  height: 120px;
+}
+
+form .form-label {
+  font-weight: 600;
+}
+
+h2, h4 {
+  color: #343a40;
+}
+.container{
+    margin-top: 70px !important;
+    margin-bottom: 20px !important;
+}

@@ -57,4 +57,8 @@ export class HomeService {
     }
     return this.http.put(`${this.apiUrl}/Posts/UpdatePost`, formData);
   }
+
+   getAllPosts(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/Posts`,)
+   }
 }

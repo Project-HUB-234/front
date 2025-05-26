@@ -1,0 +1,27 @@
+
+.contact-container {
+    min-height: 100vh; 
+    margin-top: 70px !important;
+  }
+  
+  .contact-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    border: none;
+  }
+  
+  input.ng-invalid.ng-touched,
+  textarea.ng-invalid.ng-touched {
+    border-color: #dc3545;
+    box-shadow: none;
+  }
+  
+  button.btn {
+    font-weight: 500;
+    padding: 10px;
+    font-size: 1rem;
+    background-color:rgb(17,20,45); 
+    color: white;
+  }
+  
+  

@@ -3,6 +3,8 @@ import { HomeService } from '../services/home.service';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
 import { MatDialog,MatDialogRef  } from '@angular/material/dialog';
+import { Router } from '@angular/router';
+
 
 declare var bootstrap: any;
 @Component({
@@ -15,7 +17,7 @@ export class HomeComponent {
   private modal: any;
   dialogRef!: MatDialogRef<any>;
 
-  constructor(private homeService : HomeService, private toastr:ToastrService ,public dialog: MatDialog,) {}
+  constructor(private homeService : HomeService,private router: Router, private toastr:ToastrService ,public dialog: MatDialog,) {}
   @ViewChild('callEditPostDialog') EditPostDialog !: TemplateRef<any>;
    @ViewChild('callDeletePostDialog') DeletePostDialog!: TemplateRef<any>;
    @ViewChild('callEditCommentDialog') EditCommentDialog !: TemplateRef<any>;
@@ -258,8 +260,9 @@ deleteComment(commentId: number): void {
 deletePost(postId:number){
 
 }
-  logout(){
-
+  logout() {
+    localStorage.clear();
+    this.router.navigate(['/security/login']);
   }
 
 

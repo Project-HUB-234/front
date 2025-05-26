@@ -298,19 +298,30 @@
           </div>
         
         </mat-tab>
-        <mat-tab>
-          <ng-template mat-tab-label>
-            Connections 
-          </ng-template>
-            <div class="media-card ">
-            <p>No connections yet.</p>
-            </div>
-        </mat-tab>
         <mat-tab label="Media">
-          <div class="media-card">
-          <p>No Media yet.</p>
+          <div class="media-container" *ngIf="mediaUrls.length > 0; else noMedia">
+            <div class="media-grid">
+              <div class="media-item" *ngFor="let img of mediaUrls" (click)="openDialog(img)">
+                <img [src]="img" alt="User media" />
+              </div>
+            </div>
           </div>
+        
+          <ng-template #noMedia>
+            <div class="media-card no-media">
+              <p>No Media yet.</p>
+            </div>
+          </ng-template>
+        
+          <!-- Dialog Template -->
+          <ng-template #callImageDialog let-data>
+            <div class="image-dialog">
+              <img [src]="selectedImage" alt="Full View" />
+            </div>
+          </ng-template>
         </mat-tab>
+        
+        
       </mat-tab-group>
 
     </div>

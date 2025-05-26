@@ -21,6 +21,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { TimeagoModule } from 'ngx-timeago';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { RouterModule } from '@angular/router';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -49,7 +51,9 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
       preventDuplicates: true,
     }),
     MatDialogModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    RouterModule,
+    NgbModule,
   ],
   exports: [
     MatCardModule,
@@ -69,7 +73,9 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
     MatMenuModule,
     TimeagoModule,
     MatDialogModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    RouterModule,
+    NgbModule,
   ]
 })
 export class SharedModule { }

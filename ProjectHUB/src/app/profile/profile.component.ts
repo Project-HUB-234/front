@@ -31,6 +31,11 @@ export class ProfileComponent {
 
 
  userId : number|undefined ;
+ postId=0;
+ content ="";
+ picturePath =null;
+ postEditPhotos: string[] = [];
+ categoryId=0
  ngOnInit(): void {
     this.userId = Number(localStorage.getItem("userId"));
      console.log(this.userId);
@@ -38,6 +43,9 @@ export class ProfileComponent {
      this.getUserData()
       this.getUserPosts() 
       this.getPostCategories();
+      this.UserPostLike();
+      this.UserCommentLike()
+       
     } 
   }
 
@@ -56,10 +64,11 @@ userProfile: any = null;
 postCategories: any[] = [];
 selectedCategory: any = null;
 onCategoryChange(value: any) {
-  console.log('Selected category:', value);
   this.selectedCategory = value; 
 }
-
+onCategoryEditChange(value: any) {
+  this.categoryId = value; 
+}
     getPostCategories(){
     this.homeService.getPostCategories().subscribe((result:any)=>{
       if(result){
@@ -84,6 +93,8 @@ onCategoryChange(value: any) {
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
           );
           this.postsCount = result.userPosts;
+          this.UserPostLike();
+          this.UserCommentLike()
         }
         console.log("ffff",this.userPosts);
       },
@@ -137,7 +148,18 @@ removeSelectedImage() {
   this.selectedImageFile = null;
   this.postedPhotos = [];
 }
+ onEditImage(event: any) {
+  const file = event.target.files[0];
+  if (file) {
+    this.picturePath = file;
 
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.postEditPhotos = [reader.result as string]; 
+    };
+    reader.readAsDataURL(file);
+  }
+}
 postPhoto() {
   if (!this.selectedCategory) {
     this.toastr.warning('Please select a category');
@@ -178,6 +200,8 @@ postPhoto() {
         const modalInstance = bootstrap.Modal.getInstance(modalEl);
         modalInstance?.hide();
       }
+            this.getUserPosts() 
+
     },
     error: (error) => {
       Swal.fire({
@@ -194,30 +218,155 @@ postPhoto() {
 
 
   openEditPostDialog(post:any) {
+    this.postEditPhotos=[]
+    if(post.attachments.length>0)
+    this.postEditPhotos.push(post.attachments[0].attachmentPath);
+    this.postId=post.postId;
+    this.content =post.content;
+    this.picturePath =null
+    this.categoryId=post.categoryId
      this.dialog.open(this.EditPostDialog)
    }
-   saveEditPost(data:any){
 
+   saveEditPost(){
+       const post = {
+    contant: this.content,
+    categoryId: this.categoryId,
+    postId: this.postId,
+    PostPictures: this.picturePath ? [this.picturePath] : []
+  };
+
+  this.homeService.UpdatePost(post).subscribe({
+    next: () => {
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: 'Post updated successfully',
+        timer: 2000,
+        showConfirmButton: false
+      });
+
+
+      this.picturePath = null;
+
+
+      const modalEl = document.getElementById('photoUploadModal');
+      if (modalEl) {
+        const modalInstance = bootstrap.Modal.getInstance(modalEl);
+        modalInstance?.hide();
+      }
+            this.getUserPosts() 
+            this.dialog.closeAll()
+
+    },
+    error: () => {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Failed to update post',
+        confirmButtonColor: '#d33'
+      });
+    }
+  });
    }
  openDeletePostDialog(postId:number) {
+  this.postId = postId;
      this.dialog.open(this.DeletePostDialog)
    } 
    confirmDeletePost(){
+
+    this.homeService.deletePost(this.postId).subscribe({
+    next: () => {
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: 'Post deleted successfully',
+        timer: 2000,
+        showConfirmButton: false
+      });
+
+
+      this.picturePath = null;
+
+
+      const modalEl = document.getElementById('photoUploadModal');
+      if (modalEl) {
+        const modalInstance = bootstrap.Modal.getInstance(modalEl);
+        modalInstance?.hide();
+      }
+            this.getUserPosts() 
+            this.dialog.closeAll()
+
+    },
+    error: () => {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Failed to delete post',
+        confirmButtonColor: '#d33'
+      });
+    }
+  });
 
    }
 
 //COMMENT
    commentImage: string | ArrayBuffer | null = null;
   commentText: string = '';
-onCommentImageSelected(event: any): void {
+  commentSelectedImage = null;
+  onCommentImageSelected(event: any): void {
+  this.commentSelectedImage = null
   const file = event.target.files[0];
   if (file) {
+      this.commentSelectedImage = file
+
     const reader = new FileReader();
     reader.onload = e => this.commentImage = reader.result;
     reader.readAsDataURL(file);
   }
 }
-sendComment(): void {}
+sendComment(postId : number) {
+  const comment ={
+    commentImage : this.commentSelectedImage,
+    commentText : this.commentText,
+    PostId : postId,
+    userId : this.userId
+  }
+  this.homeService.addComment(comment).subscribe({
+    next: () => {
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: 'Comment added successfully',
+        timer: 2000,
+        showConfirmButton: false
+      });
+
+     this.commentSelectedImage= null;
+      this.picturePath = null;
+      this.commentText = "";
+      this.commentImage=null
+
+
+      const modalEl = document.getElementById('photoUploadModal');
+      if (modalEl) {
+        const modalInstance = bootstrap.Modal.getInstance(modalEl);
+        modalInstance?.hide();
+      }
+            this.getUserPosts() 
+            this.dialog.closeAll()
+
+    },
+    error: () => {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Failed to add comment',
+        confirmButtonColor: '#d33'
+      });
+  }
+  })
+}
 
 removeCommentImage(): void {
   this.commentImage = null;
@@ -245,11 +394,45 @@ removePhoto(): void {
    saveEditedComment(){
     
    }
-
+    commentToDelete =0;
    openDeleteCommentDialog(commentId:number) {
+    this.commentToDelete = commentId
      this.dialog.open(this.DeleteCommentDialog)
    }
-   confirmDeleteComment(){
+   confirmDeleteComment(commentId:number){
+    this.homeService.deleteComment(this.commentToDelete).subscribe({
+    next: () => {
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: 'Comment deleted successfully',
+        timer: 2000,
+        showConfirmButton: false
+      });
+
+
+      this.picturePath = null;
+
+
+      const modalEl = document.getElementById('photoUploadModal');
+      if (modalEl) {
+        const modalInstance = bootstrap.Modal.getInstance(modalEl);
+        modalInstance?.hide();
+      }
+            this.getUserPosts() 
+            this.dialog.closeAll()
+
+    },
+    error: () => {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Failed to delete Comment',
+        confirmButtonColor: '#d33'
+      });
+    }
+  });
+
 
    }
 
@@ -262,7 +445,12 @@ toggleComments(postId: number): void {
 }
 
 toggleLike(postId: number): void {
-  this.likedPosts[postId] = !this.likedPosts[postId];
+  this.homeService.addLike(postId , this.userId!).subscribe({
+    
+  })
+        this.getUserPosts() 
+
+
 }
 
 likedComments: { [commentId: number]: boolean } = {};
@@ -292,6 +480,59 @@ deleteComment(commentId: number): void {
   // Handle deletion logic
   console.log("Delete comment with ID:", commentId);
 }
+
+userPostLike : any 
+UserPostLike(){
+  this.homeService.userPostLike(this.userId!).subscribe(result=>{
+     if(result){
+      this.userPostLike=result;
+     }
+  })
+}
+userCommentLike : any 
+UserCommentLike(){
+  this.homeService.userCommentLike(this.userId!).subscribe(result=>{
+     if(result){
+      this.userCommentLike=result;
+     }
+  })
+}
+deleteLike(postId :number){
+ this.homeService.deleteLike(postId , this.userId!).subscribe({
+    
+  })
+        this.getUserPosts() 
+  }
+addCommentLike(commentId :number){
+ this.homeService.addCommentLike(commentId , this.userId!).subscribe({
+    
+  })
+        this.getUserPosts() 
+}
+deleteCommentLike(commentId :number){
+ this.homeService.deleteCommentLike(commentId , this.userId!).subscribe({
+    
+  })
+        this.getUserPosts() 
+}
+isLiked(Id :number)
+{
+  if(this.userPostLike.includes(Id)){
+    return true;
+  }
+  return false;
+
+}
+ isCommentLiked(Id :number)
+{
+  if(this.userCommentLike.includes(Id)){
+    return true;
+  }
+  return false;
+
+}
+
+
 mediaUrls: string[] = [
   'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=400&q=80',
   'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=400&q=80',
@@ -305,4 +546,5 @@ openDialog(imageUrl: string): void {
     panelClass: 'custom-dialog-container',
   });
 }
+
 }

@@ -15,7 +15,7 @@ import { AboutComponent } from './about/about.component';
   },
   { 
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'security/login',
     pathMatch: 'full' 
   },
     {

@@ -1,0 +1,93 @@
+.card-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+  }
+  
+  .card-subtitle {
+    font-size: 0.9rem;
+    font-style: italic;
+  }
+  
+  .card-text {
+    font-size: 0.95rem;
+    color: #444;
+    white-space: pre-wrap; /* to keep formatting on multiline messages */
+  }
+  
+  .btn-outline-primary:hover {
+    background-color: #0d6efd;
+    color: white;
+  }
+  
+  .btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: white;
+  }
+  .fb-modal-body {
+    padding: 2rem 1.5rem;
+    text-align: center;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .fb-modal-body-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .fb-delete-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #1c1e21; /* Dark Facebook text color */
+    margin-bottom: 0.5rem;
+  }
+  
+  .fb-delete-subtitle {
+    font-size: 1rem;
+    color: #606770; /* Soft grey */
+    margin-bottom: 1.5rem;
+  }
+  
+  .fb-modal-footer {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    padding: 0 1.5rem 1.5rem;
+  }
+  
+  .fb-modal-footer-center {
+    justify-content: center;
+  }
+  
+  .fb-btn {
+    min-width: 100px;
+    padding: 0.5rem 1.25rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.25s ease, color 0.25s ease;
+    user-select: none;
+    box-shadow: 0 2px 5px rgb(0 0 0 / 0.1);
+  }
+  
+  .fb-btn-secondary {
+    background-color: #e4e6eb;
+    color: #050505;
+  }
+  
+  .fb-btn-secondary:hover {
+    background-color: #d8dadf;
+  }
+  
+  .fb-btn-danger {
+    background-color: #d93025;
+    color: white;
+  }
+  
+  .fb-btn-danger:hover {
+    background-color: #b1271b;
+  }
+  

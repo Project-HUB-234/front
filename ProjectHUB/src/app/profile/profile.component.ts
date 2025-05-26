@@ -1,9 +1,7 @@
-import { Component, ElementRef, OnInit, TemplateRef, ViewChild,HostListener   } from '@angular/core';
+import { Component ,TemplateRef, ViewChild  } from '@angular/core';
 import { HomeService } from '../services/home.service';
 import { ToastrService } from 'ngx-toastr';
-import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
-import { TimeagoModule } from 'ngx-timeago';
 import { MatDialog,MatDialogRef  } from '@angular/material/dialog';
 
 declare var bootstrap: any;
@@ -23,7 +21,7 @@ export class ProfileComponent {
    @ViewChild('callDeletePostDialog') DeletePostDialog!: TemplateRef<any>;
    @ViewChild('callEditCommentDialog') EditCommentDialog !: TemplateRef<any>;
     @ViewChild('callDeleteCommentDialog') DeleteCommentDialog !: TemplateRef<any>;
-
+@ViewChild('callImageDialog') ImageDialog !: TemplateRef<any>;
 
   ngAfterViewInit() {
     this.modal = new bootstrap.Modal(document.getElementById('photoUploadModal'));
@@ -110,18 +108,45 @@ selectedImageFile: File | null = null;
 postedPhotos: string[] = [];
 postContent: string = '';
 
+// Add image validation properties
+readonly maxFileSize = 5 * 1024 * 1024; // 5MB
+readonly allowedFileTypes = ['image/jpeg', 'image/png', 'image/gif'];
 
- onFileSelected(event: any) {
+onFileSelected(event: any) {
   const file = event.target.files[0];
-  if (file) {
-    this.selectedImageFile = file;
+  if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      this.postedPhotos = [reader.result as string]; 
-    };
-    reader.readAsDataURL(file);
+  // Validate file type
+  if (!this.allowedFileTypes.includes(file.type)) {
+    this.toastr.error('Please upload only images (JPEG, PNG, or GIF)');
+    return;
   }
+
+  // Validate file size
+  if (file.size > this.maxFileSize) {
+    this.toastr.error('File size should not exceed 5MB');
+    return;
+  }
+
+  this.selectedImageFile = file;
+  const reader = new FileReader();
+  
+  reader.onload = () => {
+    this.postedPhotos = [reader.result as string];
+  };
+
+  reader.onerror = () => {
+    this.toastr.error('Error reading file');
+    this.selectedImageFile = null;
+    this.postedPhotos = [];
+  };
+
+  reader.readAsDataURL(file);
+}
+
+removeSelectedImage() {
+  this.selectedImageFile = null;
+  this.postedPhotos = [];
 }
  onEditImage(event: any) {
   const file = event.target.files[0];
@@ -136,14 +161,21 @@ postContent: string = '';
   }
 }
 postPhoto() {
-  const post = {
-    content: this.postContent,
-    categoryId: this.selectedCategory,
-    userId: this.userId,
-    PostPictures: this.selectedImageFile ? [this.selectedImageFile] : []
-  };
+  if (!this.selectedCategory) {
+    this.toastr.warning('Please select a category');
+    return;
+  }
 
-  this.homeService.AddPost(post).subscribe({
+  const formData = new FormData();
+  formData.append('content', this.postContent);
+  formData.append('categoryId', this.selectedCategory);
+  formData.append('userId', this.userId!.toString());
+  
+  if (this.selectedImageFile) {
+    formData.append('PostPictures', this.selectedImageFile);
+  }
+
+  this.homeService.AddPost(formData).subscribe({
     next: () => {
       Swal.fire({
         icon: 'success',
@@ -153,11 +185,16 @@ postPhoto() {
         showConfirmButton: false
       });
 
+      // Reset form
       this.postContent = '';
       this.postedPhotos = [];
       this.selectedImageFile = null;
       this.selectedCategory = null;
 
+      // Refresh posts
+      this.getUserPosts();
+
+      // Close modal
       const modalEl = document.getElementById('photoUploadModal');
       if (modalEl) {
         const modalInstance = bootstrap.Modal.getInstance(modalEl);
@@ -166,11 +203,11 @@ postPhoto() {
             this.getUserPosts() 
 
     },
-    error: () => {
+    error: (error) => {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: 'Failed to add post',
+        text: error.message || 'Failed to add post',
         confirmButtonColor: '#d33'
       });
     }
@@ -493,6 +530,21 @@ isLiked(Id :number)
   }
   return false;
 
+}
+
+
+mediaUrls: string[] = [
+  'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=400&q=80',
+  'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=400&q=80',
+  'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400&q=80',
+];
+selectedImage: string = '';
+
+openDialog(imageUrl: string): void {
+  this.selectedImage = imageUrl;
+  this.dialog.open(this.ImageDialog, {
+    panelClass: 'custom-dialog-container',
+  });
 }
 
 }

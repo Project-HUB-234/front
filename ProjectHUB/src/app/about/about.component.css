@@ -1,0 +1,15 @@
+.container{
+    margin-top: 30px !important;
+}
+.card-img-top {
+    height: 220px;
+    object-fit: cover;
+    border-radius: 0.375rem 0.375rem 0 0;
+  }
+  
+  .lead {
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: #555;
+  }
+  

@@ -5,6 +5,8 @@ import { AdminModule } from './admin/admin.module';
 import { AuthModule } from './auth/auth.module';
 import { ProfileComponent } from './profile/profile.component';
 import { EditProfileComponent } from './edit-profile/edit-profile.component';
+import { ContactComponent } from './contact/contact.component';
+import { AboutComponent } from './about/about.component';
 
  const routes:Routes=[
   {
@@ -23,6 +25,13 @@ import { EditProfileComponent } from './edit-profile/edit-profile.component';
      {
     path:'updateprofile',
     component: EditProfileComponent
+  },
+  {
+    path:'contact',
+    component: ContactComponent
+  },{
+    path:'about',
+    component: AboutComponent
   },
   {
     path:'security',

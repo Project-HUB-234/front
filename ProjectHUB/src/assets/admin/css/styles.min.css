@@ -15809,6 +15809,7 @@ textarea.form-control-lg {
 .app-topstrip {
   position: fixed;
   top: 0;
+  height: 63px;
   z-index: 12;
 }
 
@@ -15912,11 +15913,11 @@ body {
   margin: 0 auto;
   padding: 24px;
   transition: 0.2s ease-in;
-  padding-top: 180px;
+  padding-top: 100px;
 }
 @media (max-width: 991.98px) {
   .body-wrapper .container-fluid, .body-wrapper .container-sm, .body-wrapper .container-md, .body-wrapper .container-lg, .body-wrapper .container-xl, .body-wrapper .container-xxl {
-    padding-top: 230px;
+    padding-top: 100px;
   }
 }
 

@@ -1,0 +1,196 @@
+.fb-form-row {
+    display: flex;
+    gap: 16px; 
+    flex-wrap: wrap; 
+  }
+  
+  .fb-form-half {
+    flex: 1 1 45%; 
+    min-width: 200px; 
+  }
+  
+
+.card-body img {
+    border: 2px solid #fff;
+  }
+  
+  .card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+
+
+/* Modal container */
+.fb-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    background: #1877f2; /* Facebook Blue */
+    color: white;
+    font-weight: 600;
+    font-size: 1.25rem;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+  }
+  
+  .fb-modal-header-danger {
+    background: #f02849; /* Facebook Danger Red */
+  }
+  
+  .fb-close-btn {
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    color: white;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+  }
+  
+  .fb-modal-body {
+    padding: 24px;
+    background: #fff;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #1c1e21;
+    font-size: 0.95rem;
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+  
+  .fb-modal-body-center {
+    text-align: center;
+    padding: 40px 24px;
+    font-weight: 600;
+  }
+  
+  .fb-delete-title {
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+  }
+  
+  .fb-delete-subtitle {
+    color: #606770;
+    font-weight: 400;
+    font-size: 1rem;
+  }
+  
+  .fb-form-group {
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .fb-form-group label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #1c1e21;
+  }
+  
+  .fb-required {
+    color: #f02849;
+    margin-left: 3px;
+  }
+  
+  .fb-input,
+  .fb-textarea {
+    border: 1px solid #ccd0d5;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.95rem;
+    transition: border-color 0.3s ease;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #1c1e21;
+  }
+  
+  .fb-input:focus,
+  .fb-textarea:focus {
+    border-color: #1877f2;
+    outline: none;
+    box-shadow: 0 0 5px rgba(24, 119, 242, 0.5);
+  }
+  
+  .fb-textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+  
+  .fb-error {
+    margin-top: 4px;
+    font-size: 0.8rem;
+    color: #f02849;
+  }
+  
+  .fb-profile-preview {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 24px;
+  }
+  
+  .fb-profile-img {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    border: 2px solid #ccd0d5;
+  }
+  
+  .fb-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+  
+  .fb-modal-footer-center {
+    justify-content: center;
+    gap: 16px;
+  }
+  
+  .fb-btn {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: none;
+    min-width: 100px;
+    transition: background-color 0.3s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 6px rgb(0 0 0 / 0.15);
+  }
+  
+  .fb-btn-primary {
+    background-color: #1877f2;
+    color: white;
+  }
+  
+  .fb-btn-primary:hover:not(:disabled) {
+    background-color: #165ec9;
+    box-shadow: 0 4px 12px rgba(24, 119, 242, 0.6);
+  }
+  
+  .fb-btn-secondary {
+    background-color: #e4e6eb;
+    color: #050505;
+    box-shadow: none;
+  }
+  
+  .fb-btn-secondary:hover {
+    background-color: #d8dadf;
+  }
+  
+  .fb-btn-danger {
+    background-color: #f02849;
+    color: white;
+  }
+  
+  .fb-btn-danger:hover {
+    background-color: #d81b38;
+  }
+  
+  

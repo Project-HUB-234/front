@@ -1,0 +1,116 @@
+<div class="body-wrapper-inner">
+    <div class="container-fluid py-4">
+      <h2 class="text-primary mb-4">Admin Profile</h2>
+  
+      <div class="row">
+        <!-- Profile Summary -->
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 rounded-4 overflow-hidden text-center">
+              <!-- Background Banner -->
+              <div class="position-relative">
+                <img
+                  [src]="admin.BackgroundPicture || 'https://via.placeholder.com/600x200'"
+                  alt="Background"
+                  class="img-fluid w-100"
+                  style="height: 150px; object-fit: cover;"
+                />
+          
+                <!-- Profile Picture -->
+                <img
+                  [src]="admin.ProfilePicture || 'https://via.placeholder.com/150'"
+                  alt="Profile Picture"
+                  class="rounded-circle shadow position-absolute top-100 start-50 translate-middle"
+                  width="120"
+                  height="120"
+                  style="object-fit: cover; background: white; border: 3px solid #fff;"
+                />
+              </div>
+          
+              <!-- Info Section -->
+              <div class="card-body mt-5">
+                <h4 class="mb-1">{{ admin.FirstName }} {{ admin.LastName }}</h4>
+                <p class="text-muted mb-1">{{ admin.Email }}</p>
+                <p class="text-muted small">{{ admin.Job || 'No Job Title' }}</p>
+          
+                <p class="small text-muted" *ngIf="admin.PhoneNumber">
+                  📞 {{ admin.PhoneNumber }}
+                </p>
+                <p class="small text-muted" *ngIf="admin.Address">
+                  📍 {{ admin.Address }}
+                </p>
+                <p class="small text-muted" *ngIf="admin.DateJoined">
+                  🕒 Joined: {{ admin.DateJoined | date: 'mediumDate' }}
+                </p>
+                <p class="text-muted small" *ngIf="admin.Brif">
+                  "{{ admin.Brif }}"
+                </p>
+          
+                <div *ngIf="admin.QuickAccessQrcode" class="mt-3">
+                  <img
+                    [src]="admin.QuickAccessQrcode"
+                    alt="QR Code"
+                    width="80"
+                    height="80"
+                    class="img-thumbnail border-0"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          
+  
+        <!-- Edit Mode -->
+        <div class="col-md-8">
+          <div class="card shadow-sm border-0 rounded-4">
+            <div class="card-body d-flex justify-content-between align-items-center">
+              <form #editProfileForm="ngForm" (ngSubmit)="onSaveEdit(editProfileForm)" class="w-100">
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label class="form-label">First Name</label>
+                    <input type="text" name="FirstName" [(ngModel)]="admin.FirstName" class="form-control" required />
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Last Name</label>
+                    <input type="text" name="LastName" [(ngModel)]="admin.LastName" class="form-control" required />
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="Email" [(ngModel)]="admin.Email" class="form-control" required />
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Phone Number</label>
+                    <input type="text" name="PhoneNumber" [(ngModel)]="admin.PhoneNumber" class="form-control" />
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Job Title</label>
+                    <input type="text" name="Job" [(ngModel)]="admin.Job" class="form-control" />
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Address</label>
+                    <input type="text" name="Address" [(ngModel)]="admin.Address" class="form-control" />
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Profile Picture URL</label>
+                    <input type="url" name="ProfilePicture" [(ngModel)]="admin.ProfilePicture" class="form-control" />
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Background Picture URL</label>
+                    <input type="url" name="BackgroundPicture" [(ngModel)]="admin.BackgroundPicture" class="form-control" />
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label">Brief</label>
+                    <textarea name="Brif" rows="3" [(ngModel)]="admin.Brif" class="form-control"></textarea>
+                  </div>
+                </div>
+                <div class="text-end mt-4 d-flex gap-2 justify-content-end">
+                  <button type="submit" class="btn btn-success btn-sm" [disabled]="!editProfileForm.valid">Save</button>
+                  <button type="button" class="btn btn-secondary btn-sm" (click)="cancelEdit()">Cancel</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

@@ -13,7 +13,7 @@ import { EditProfileComponent } from './edit-profile/edit-profile.component';
   },
   { 
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'security/login',
     pathMatch: 'full' 
   },
     {

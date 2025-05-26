@@ -28,13 +28,7 @@ export class LoginComponent {
       localStorage.clear();
       this.authService.login(this.loginForm.value).subscribe((result:any)=>{
        if(result){
-console.log('Login result:', result);
-     Swal.fire({
-            icon: 'success',
-            title: 'Welcome!',
-            text: 'Login successful',
-            confirmButtonText: 'Continue'
-          }).then(() => {
+
   localStorage.setItem('userId', result.userId);
   localStorage.setItem('roleId', result.roleId);
 
@@ -43,7 +37,7 @@ console.log('Login result:', result);
   } else if (result.roleId === 2) {
     this.router.navigate(['/profile']);
   }
-});
+
        }
       },err=>{
         Swal.fire({

@@ -101,22 +101,36 @@
 
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Content</mat-label>
-      <textarea matInput rows="4" ></textarea>
+      <textarea matInput [(ngModel)]="content" rows="4" ></textarea>
     </mat-form-field>
-
+ <mat-form-field appearance="fill" class="category-select">
+              <mat-label>{{ 'Category' }}</mat-label>
+              <mat-select  [(value)]="categoryId" (selectionChange)="onCategoryEditChange($event.value)">
+                <mat-option *ngFor="let category of postCategories" [value]="category.categoryId">
+                  {{ category.categoryName }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
     <div class="image-section">
-      <label>Current Photo:</label>
-      <img [src]="" alt="Post Image" class="preview-image" />
+      <label *ngIf="picturePath !=null">Current Photo:</label>
+       <div class="photo-item" *ngFor="let photo of postEditPhotos" >
+                  <img [src]="photo" class="img-fluid" alt="Posted photo" style="width: 100%; height: 300px;">
+        </div>
 
       <div class="upload-new">
         <label for="upload-photo">Change Photo:</label>
-        <input type="file" id="upload-photo"  />
+                      <button mat-button (click)="fileInput.click()" class="d-flex align-items-center gap-1">
+              <mat-icon>image</mat-icon>
+               Photo
+              </button>
+        <input #fileInput type="file" accept="image/*" (change)="onEditImage($event)" style="display: none;">
+       
       </div>
     </div>
 
     <div class="dialog-actions">
       <button mat-stroked-button mat-dialog-close>Cancel</button>
-      <button mat-flat-button color="primary" (click)="saveEditPost(post)">Save</button>
+      <button mat-flat-button color="primary" (click)="saveEditPost()">Save</button>
     </div>
   </div>
 </ng-template>
@@ -143,12 +157,19 @@
 
  <div class="post-actions">
   <div class="action-buttons action-item">
-    <button mat-icon-button (click)="toggleLike(post.postId)" style="width: 140px;">
-      <mat-icon style="color: rgb(63,81,181);">
-        {{ likedPosts[post.postId] ? 'thumb_up' : 'thumb_up_off_alt' }}
-      </mat-icon>
-          <span style="color: rgb(102,102,102); font-size: medium;">{{ likedPosts[post.postId] ? 'Liked' : 'Like' }} ({{ post?.postLikes.length || 0 }})</span>
-    </button>
+   <button mat-icon-button 
+  (click)="isLiked(post.postId) ? deleteLike(post.postId) : toggleLike(post.postId)" 
+  style="width: 140px;">
+  
+  <mat-icon style="color: rgb(63,81,181);">
+    {{ isLiked(post.postId) ? 'thumb_up' : 'thumb_up_off_alt' }}
+  </mat-icon>
+  
+  <span style="color: rgb(102,102,102); font-size: medium;">
+    {{ isLiked(post.postId) ? 'Liked' : 'Like' }} ({{ post?.postLikes.length || 0 }})
+  </span>
+</button>
+
   </div>
 
   <div class="action-buttons action-item">
@@ -171,7 +192,7 @@
     </button>
 
     <!-- Send Button -->
-    <button mat-icon-button matSuffix color="primary" matTooltip="Send" (click)="sendComment()">
+    <button mat-icon-button matSuffix color="primary" matTooltip="Send" (click)="sendComment(post.postId)">
       <mat-icon>send</mat-icon>
     </button>
   </mat-form-field>
@@ -208,7 +229,7 @@
     <mat-icon class="small-icon">edit</mat-icon>
     <span class="small-text">Edit</span>
   </button>
-  <button mat-menu-item (click)="openDeleteCommentDialog(comment.id)">
+  <button mat-menu-item (click)="openDeleteCommentDialog(comment.commentId)">
     <mat-icon class="small-icon">delete</mat-icon>
     <span class="small-text">Delete</span>
   </button>
@@ -258,7 +279,7 @@
 
     <div class="dialog-actions">
       <button mat-stroked-button color="primary" mat-dialog-close>Cancel</button>
-      <button mat-flat-button color="warn" (click)="confirmDeleteComment()">Delete</button>
+      <button mat-flat-button color="warn" (click)="confirmDeleteComment(comment.commentId)">Delete</button>
     </div>
   </div>
 </ng-template>
@@ -266,19 +287,19 @@
   <div class="comment-text">
     <p>{{ comment?.content }}</p>
   </div>
-  <div *ngIf="comment?.attachments>0" class="comment-photo">
-    <img [src]="comment.attachments" alt="Comment photo" />
+  <div *ngIf="comment?.attachments.length>0" class="comment-photo">
+    <img [src]="comment.attachments[0].attachmentPath" alt="Comment photo" />
   </div>
 </div>
 
 
   <div class="comment-footer">
-    <button mat-icon-button (click)="toggleCommentLike(comment.id)">
+    <button mat-icon-button (click)="isCommentLiked(comment.commentId)?deleteCommentLike(comment.commentId):addCommentLike(comment.commentId)">
       <mat-icon style="color: rgb(63,81,181);">
-        {{ likedComments[comment.id] ? 'thumb_up' : 'thumb_up_off_alt' }}
+        {{ isCommentLiked(comment.commentId) ? 'thumb_up' : 'thumb_up_off_alt' }}
       </mat-icon>
     </button>
-    <span>{{ likedComments[comment.id] ? 'Liked' : 'Like' }}</span>
+    <span>{{ isCommentLiked(comment.commentId) ? 'Liked' : 'Like' }}  ({{comment.commentLikes.length || 0 }})</span>
   </div>
 </div>
     </div>

@@ -1,20 +1,26 @@
-<nav class="navbar navbar-expand-lg navbar-dark shadow-sm fixed-top" style="background-color: rgb(17,20,45);">
+<nav class="navbar navbar-expand-lg navbar-dark shadow-sm fixed-top"
+  style="background-color: rgb(17,20,45);">
   <div class="container-fluid" style="  max-width: 1300px;
 ">
     <!-- Logo -->
     <a class="navbar-brand d-flex align-items-center" href="#">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png" alt="Logo" width="32" height="32" class="me-2">
+      <img
+        src="https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png"
+        alt="Logo" width="32" height="32" class="me-2">
       MySocial
     </a>
 
     <!-- Toggle button for mobile -->
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+      data-bs-target="#mainNavbar" aria-controls="mainNavbar"
+      aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <!-- Navbar Content -->
     <div class="collapse navbar-collapse" id="mainNavbar">
-      <ul class="navbar-nav mx-auto mb-2 mb-lg-0 d-flex align-items-center gap-3">
+      <ul
+        class="navbar-nav mx-auto mb-2 mb-lg-0 d-flex align-items-center gap-3">
         <li class="nav-item">
 
           <a class="nav-link text-white" routerLink="/home" title="Home">
@@ -22,12 +28,14 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-white" routerLink="/profile" title="My Profile">
+          <a class="nav-link text-white" routerLink="/profile"
+            title="My Profile">
             <i class="bi bi-person-fill fs-5"></i>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-white" routerLink="/contact" title="Contact Us">
+          <a class="nav-link text-white" routerLink="/contact"
+            title="Contact Us">
             <i class="bi bi-envelope-fill fs-5"></i>
           </a>
         </li>
@@ -36,28 +44,31 @@
             <i class="bi bi-info-circle-fill fs-5"></i>
           </a>
         </li>
-        
+
       </ul>
 
       <ul class="navbar-nav ms-auto">
         <li ngbDropdown class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 text-white"
-             id="userDropdown"
-             ngbDropdownToggle
-             role="button"
-             aria-expanded="false">
+          <a
+            class="nav-link dropdown-toggle d-flex align-items-center gap-2 text-white"
+            id="userDropdown"
+            ngbDropdownToggle
+            role="button"
+            aria-expanded="false">
             <i class="bi bi-person-circle fs-5"></i>
             {{ userName }}
           </a>
-      
-          <ul ngbDropdownMenu class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
-            <li><a class="dropdown-item" [routerLink]="'/updateprofile'"><i class="bi bi-gear me-2"></i>Settings</a></li>
+
+          <ul ngbDropdownMenu class="dropdown-menu dropdown-menu-end shadow"
+            aria-labelledby="userDropdown">
+            <li><a class="dropdown-item" routerLink="/updateprofile"><i
+                  class="bi bi-gear me-2"></i>Settings</a></li>
             <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item text-danger" (click)="logout()"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+            <li><a class="dropdown-item text-danger" (click)="logout()"><i
+                  class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
           </ul>
         </li>
       </ul>
-      
 
     </div>
   </div>

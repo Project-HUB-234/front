@@ -25,7 +25,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
-    NavbarComponent,
+
+    NavbarComponent
   ],
   imports: [
     CommonModule,
@@ -72,7 +73,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     MatDialogModule,
     MatAutocompleteModule,
     RouterModule,
-    NgbModule,
+    NgbModule
   ]
 })
 export class SharedModule { }

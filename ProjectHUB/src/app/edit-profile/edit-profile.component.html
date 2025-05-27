@@ -13,14 +13,14 @@
             <div class="mb-3">
               <label for="profilePicture" class="form-label">Profile Picture</label>
               <input type="file" class="form-control" id="profilePicture" (change)="onProfilePicSelected($event)" />
-              <img *ngIf="user.ProfilePicture" [src]="user.ProfilePicture" alt="Profile" class="img-thumbnail mt-2" style="max-width: 120px;">
+              <img *ngIf="userProfile.profilePicture" [src]="userProfile.profilePicture" alt="Profile" class="img-thumbnail mt-2" style="max-width: 120px;">
             </div>
 
             <!-- Background Picture -->
             <div class="mb-3">
               <label for="backgroundPicture" class="form-label">Background Picture</label>
               <input type="file" class="form-control" id="backgroundPicture" (change)="onBackgroundPicSelected($event)" />
-              <img *ngIf="user.BackgroundPicture" [src]="user.BackgroundPicture" alt="Background" class="img-fluid mt-2" style="max-height: 150px;">
+              <img *ngIf="userProfile.backgroundPicture" [src]="userProfile.backgroundPicture" alt="Background" class="img-fluid mt-2" style="max-height: 150px;">
             </div>
 
             <!-- Basic Info -->
@@ -30,7 +30,7 @@
                 type="email"
                 class="form-control"
                 id="email"
-                [(ngModel)]="user.Email"
+                [(ngModel)]="userProfile.email"
                 name="email"
                 required
                 disabled
@@ -45,7 +45,7 @@
                   type="text"
                   class="form-control"
                   id="firstName"
-                  [(ngModel)]="user.FirstName"
+                  [(ngModel)]="userProfile.firstName"
                   name="firstName"
                   required
                 />
@@ -56,7 +56,7 @@
                   type="text"
                   class="form-control"
                   id="lastName"
-                  [(ngModel)]="user.LastName"
+                  [(ngModel)]="userProfile.lastName"
                   name="lastName"
                   required
                 />
@@ -70,7 +70,7 @@
                 type="tel"
                 class="form-control"
                 id="phoneNumber"
-                [(ngModel)]="user.PhoneNumber"
+                [(ngModel)]="userProfile.phoneNumber"
                 name="phoneNumber"
               />
             </div>
@@ -81,7 +81,7 @@
                 type="text"
                 class="form-control"
                 id="address"
-                [(ngModel)]="user.Address"
+                [(ngModel)]="userProfile.address"
                 name="address"
               />
             </div>
@@ -93,7 +93,7 @@
                 type="text"
                 class="form-control"
                 id="job"
-                [(ngModel)]="user.Job"
+                [(ngModel)]="userProfile.job"
                 name="job"
               />
             </div>
@@ -103,7 +103,7 @@
               <textarea
                 class="form-control"
                 id="brief"
-                [(ngModel)]="user.Brif"
+                [(ngModel)]="userProfile.brif"
                 name="brief"
                 rows="3"
               ></textarea>
@@ -115,9 +115,16 @@
               <input
                 type="text"
                 class="form-control"
-                [value]="user.DateJoined | date:'mediumDate'"
+                [value]="userProfile.dateJoined | date:'mediumDate'"
                 disabled
               />
+            </div>
+
+            <!-- QR Code Picture-->
+            <div class="mb-3">
+              <label for="QRPicture" class="form-label">QR Code Picture</label>
+              <input type="file" class="form-control" id="QRPicture" (change)="onQRPicSelected($event)" />
+              <img *ngIf="userProfile.quickAccessQrcode" [src]="userProfile.quickAccessQrcode" alt="QR Code" class="img-fluid mt-2" style="max-height: 150px;">
             </div>
 
             <button type="submit" class="btn " style="background-color: rgb(17,20,45); color: white;">Save Profile</button>
@@ -134,7 +141,7 @@
                 type="password"
                 class="form-control"
                 id="currentPassword"
-                [(ngModel)]="passwords.currentPassword"
+                [(ngModel)]="currentPassword"
                 name="currentPassword"
                 required
               />
@@ -145,7 +152,7 @@
                 type="password"
                 class="form-control"
                 id="newPassword"
-                [(ngModel)]="passwords.newPassword"
+                [(ngModel)]="newPassword"
                 name="newPassword"
                 required
                 minlength="6"
@@ -157,7 +164,7 @@
                 type="password"
                 class="form-control"
                 id="confirmPassword"
-                [(ngModel)]="passwords.confirmPassword"
+                [(ngModel)]="confirmPassword"
                 name="confirmPassword"
                 required
                 minlength="6"

@@ -1,5 +1,7 @@
 import { Component, TemplateRef, ViewChild, } from '@angular/core';
-import { MatDialog,MatDialogRef  } from '@angular/material/dialog';
+import { AdminService } from 'src/app/services/admin.service';
+import Swal from 'sweetalert2';
+
 
 @Component({
   selector: 'app-mange-catgories',
@@ -7,27 +9,65 @@ import { MatDialog,MatDialogRef  } from '@angular/material/dialog';
   styleUrls: ['./mange-catgories.component.css']
 })
 export class MangeCatgoriesComponent {
-  dialogRef!: MatDialogRef<any>;
+  constructor( private adminService: AdminService) {}
 
-  constructor(public dialog: MatDialog) {}
-  @ViewChild('callDeletecategoryDialog') DeletecategoryDialog!: TemplateRef<any>
 
-  categories: any[] = [
-    { CategoryName: 'Technology' },
-    { CategoryName: 'Travel' },
-    { CategoryName: 'Food' },
-  ];
-
+  ngOnInit(): void {
+    this.getCategories();
+  }
+  
+  categories: any[] = [];
+  getCategories(){
+    this.adminService.getPostCategories().subscribe(
+      (result: any) => {
+        this.categories = result;
+        console.log(this.categories);
+      }
+    );
+  }
+  
   newCategory: any = { CategoryName: '' };
   editIndex: number | null = null;
 
   onAddCategory(form: any) {
-    if (form.valid && this.newCategory.CategoryName.trim()) {
-      this.categories.push({ CategoryName: this.newCategory.CategoryName.trim() });
-      this.newCategory.CategoryName = '';
-      form.resetForm();
+    const name = this.newCategory.CategoryName?.trim();
+  
+    if (form.valid && name) {
+      const newCat = { CategoryName: name };
+  
+      this.adminService.addPostCategory(newCat).subscribe({
+        next: (createdCategory: any = {}) => {
+          this.categories.push(createdCategory);
+          this.newCategory.CategoryName = '';
+          form.resetForm();
+  
+          Swal.fire({
+            icon: 'success',
+            title: 'Category Added',
+            text: 'The new category was added successfully.',
+            timer: 2000,
+            showConfirmButton: false
+          });
+          this.getCategories();
+        },
+        error: (err) => {
+          console.error('Error adding category:', err);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Failed to add category. Please try again later.',
+          });
+        }
+      });
+    } else {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Invalid Input',
+        text: 'Please enter a valid category name.',
+      });
     }
   }
+  
 
   startEdit(index: number) {
     this.editIndex = index;
@@ -38,16 +78,73 @@ export class MangeCatgoriesComponent {
   }
 
   onSaveEdit(index: number, form: any) {
-    if (form.valid && this.categories[index].CategoryName.trim()) {
-      this.categories[index].CategoryName = this.categories[index].CategoryName.trim();
-      this.editIndex = null;
+    const editedCategory = this.categories[index];
+  
+    if (form.valid && editedCategory.categoryName.trim()) {
+      const updateDto = {
+        id: editedCategory.categoryId,
+        categoryName: editedCategory.categoryName.trim()
+      };
+  
+      this.adminService.updateCategory(updateDto).subscribe({
+        next: () => {
+          this.categories[index].categoryName = updateDto.categoryName;
+  
+          Swal.fire({
+            icon: 'success',
+            title: 'Updated!',
+            text: 'The category has been updated.',
+            timer: 2000,
+            showConfirmButton: false
+          });
+  
+          this.editIndex = null;
+        },
+        error: () => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Failed to update the category.'
+          });
+        }
+      });
     }
   }
+  
+ 
 
-  onDeleteCategory(index: number) {
-    this.dialog.open(this.DeletecategoryDialog);
-
+  confirmDeleteCategory(categoryId: number, index: number) {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'This category will be permanently deleted!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel'
+    }).then(result => {
+      if (result.isConfirmed) {
+        this.adminService.deleteCategory(categoryId ).subscribe({
+          next: () => {
+            this.categories.splice(index, 1);
+  
+            Swal.fire({
+              icon: 'success',
+              title: 'Deleted!',
+              text: 'The category has been deleted.',
+              timer: 2000,
+              showConfirmButton: false
+            });
+          },
+          error: () => {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'Failed to delete the category.'
+            });
+          }
+        });
+      }
+    });
   }
-  confirmDeleteCategory() {
-  }
+  
 }

@@ -1,5 +1,7 @@
 import { Component, TemplateRef, ViewChild, } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { AdminService } from 'src/app/services/admin.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-mange-contact',
@@ -9,62 +11,89 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 export class MangeContactComponent {
   dialogRef!: MatDialogRef<any>;
 
-  constructor(public dialog: MatDialog) {}
+  constructor(public dialog: MatDialog, private adminService: AdminService) {}
   @ViewChild('callDeleteContactDialog') DeleteContactDialog!: TemplateRef<any>
 
-  searchTerm: string = '';
-  filteredContacts: any[] = [];
+  contacts: any[] = [];
+filteredContacts: any[] = [];
+searchTerm: string = '';
+
+selectedContactId: number | null = null;
+selectedContactIndex: number | null = null;
   
-  contacts: any[] = [
-    {
-      UserEmail: 'john.doe@example.com',
-      ContactTitle: 'Website Issue',
-      ContactMessage: 'I am experiencing an issue with the login feature on your website.',
-    },
-    {
-      UserEmail: 'jane.smith@example.com',
-      ContactTitle: 'Feature Request',
-      ContactMessage: 'Could you please add a dark mode to the website?',
-    },
-    {
-      UserEmail: 'alex.brown@example.com',
-      ContactTitle: 'General Inquiry',
-      ContactMessage: 'What are your customer support hours?',
-    },
-    {
-      UserEmail: 'maria.wilson@example.com',
-      ContactTitle: 'Feedback',
-      ContactMessage: 'Great service! I love the new updates you rolled out last week.',
-    },
-    {
-      UserEmail: 'samuel.jones@example.com',
-      ContactTitle: 'Bug Report',
-      ContactMessage: 'The contact form sometimes fails to submit on mobile devices.',
-    }
-  ];
-  ngOnInit() {
-    // Initialize filteredContacts with full list initially
-    this.filteredContacts = [...this.contacts];
-  }
+
+ngOnInit() {
+  this.loadContacts();
+}
+
+loadContacts() {
+  this.adminService.getContact().subscribe((data: any[]) => {
+    this.contacts = data;
+    this.filteredContacts = [...data];
+    console.log(this.contacts);
+  });
+}
   
-  filterContacts() {
-    const term = this.searchTerm.toLowerCase();
-    this.filteredContacts = this.contacts.filter(
-      c =>
-        c.UserEmail.toLowerCase().includes(term) ||
-        c.ContactTitle.toLowerCase().includes(term)
-    );
-  }
+filterContacts() {
+  const term = this.searchTerm.toLowerCase();
+  this.filteredContacts = this.contacts.filter(
+    c =>
+      c.userEmail.toLowerCase().includes(term) ||
+      c.contactTitle.toLowerCase().includes(term)
+  );
+}
+
   generateMailToLink(contact: any): string {
     const subject = encodeURIComponent(`Re: ${contact.ContactTitle}`);
     const body = encodeURIComponent(`Hi,\n\nRegarding your message:\n\n${contact.ContactMessage}`);
     return `mailto:${contact.UserEmail}?subject=${subject}&body=${body}`;
   }
   
-  openDeleteContactDialog(contact: any) {
-    this.dialog.open(this.DeleteContactDialog);
-  }
-  confirmDeleteContact() { 
+  openDeleteContactDialog(contactId: number, index: number) {
+    this.selectedContactId = contactId;
+    this.selectedContactIndex = index;
   
-}
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'This contact will be permanently deleted.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel'
+    }).then(result => {
+      if (result.isConfirmed) {
+        this.confirmDeleteContact();
+      }
+    });
+  }
+  
+  confirmDeleteContact() {
+    if (this.selectedContactId !== null && this.selectedContactIndex !== null) {
+      this.adminService.deleteContact(this.selectedContactId).subscribe({
+        next: () => {
+          this.contacts.splice(this.selectedContactIndex as number, 1);
+          this.filterContacts(); // refresh filtered list
+  
+          Swal.fire({
+            icon: 'success',
+            title: 'Deleted!',
+            text: 'The contact has been deleted.',
+            timer: 2000,
+            showConfirmButton: false
+          });
+  
+          this.selectedContactId = null;
+          this.selectedContactIndex = null;
+        },
+        error: () => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Failed to delete the contact.'
+          });
+        }
+      });
+    }
+  }
+  
 }

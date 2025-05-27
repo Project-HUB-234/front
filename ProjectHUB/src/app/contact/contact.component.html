@@ -6,37 +6,30 @@
         <div class="card shadow-sm p-4 contact-card">
           <h3 class="text-center mb-4">📬 Get in Touch</h3>
   
-          <form [formGroup]="contactForm" (ngSubmit)="onSubmit()">
-            <div class="mb-3">
-              <label class="form-label">Full Name</label>
-              <input type="text" class="form-control" formControlName="name" />
-              <div class="form-text text-danger" *ngIf="contactForm.get('name')?.touched && contactForm.get('name')?.invalid">
-                Name is required.
-              </div>
-            </div>
-  
+          <form [formGroup]="contactForm">
+          
             <div class="mb-3">
               <label class="form-label">Email Address</label>
-              <input type="email" class="form-control" formControlName="email" />
-              <div class="form-text text-danger" *ngIf="contactForm.get('email')?.touched && contactForm.get('email')?.invalid">
+              <input type="email" class="form-control" formControlName="UserEmail" />
+              <div class="form-text text-danger" *ngIf="contactForm.get('UserEmail')?.touched && contactForm.get('UserEmail')?.invalid">
                 A valid email is required.
               </div>
             </div>
   
             <div class="mb-3">
               <label class="form-label">Subject</label>
-              <input type="text" class="form-control" formControlName="subject" />
+              <input type="text" class="form-control" formControlName="ContactTitle" />
             </div>
   
             <div class="mb-3">
               <label class="form-label">Message</label>
-              <textarea class="form-control" rows="5" formControlName="message"></textarea>
-              <div class="form-text text-danger" *ngIf="contactForm.get('message')?.touched && contactForm.get('message')?.invalid">
+              <textarea class="form-control" rows="5" formControlName="ContactMessage"></textarea>
+              <div class="form-text text-danger" *ngIf="contactForm.get('ContactMessage')?.touched && contactForm.get('ContactMessage')?.invalid">
                 Message is required.
               </div>
             </div>
   
-            <button type="submit" class="btn w-100 mt-2">Send Message</button>
+            <button type="submit" class="btn w-100 mt-2" (click)="onSubmit()">Send Message</button>
           </form>
         </div>
       </div>

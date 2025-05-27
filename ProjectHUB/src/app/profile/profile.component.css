@@ -688,3 +688,29 @@ mat-tab-group ::ng-deep .mat-tab-label {
   padding: 2rem;
   font-size: 1.2rem;
 }
+.qr-code-card {
+  width: 300px;
+  margin: auto;
+  text-align: center;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.qr-title {
+  margin-bottom: 16px;
+  font-size: 20px;
+  color: #3f51b5;
+}
+
+.qr-code-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.qr-image {
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+}

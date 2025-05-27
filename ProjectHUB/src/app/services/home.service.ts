@@ -93,6 +93,7 @@ export class HomeService {
   }
 
   addCommentLike(commentId: number, userId: number) {
+    this.getAllPosts();  
     return this.http.get(`${this.apiUrl}/CommentLikes/${commentId}/${userId}`);
   }
   deleteCommentLike(commentId: number, userId: number) {
@@ -140,5 +141,16 @@ export class HomeService {
       formData.append('BackgroundPicture', file3, file3.name);
     }
     return this.http.put(`${this.apiUrl}/Users/update`, formData);
+  PostLikeCount(postId: number[]) {
+    return this.http.post(`${this.apiUrl}/PostLikes/postLikeCounts`,postId);
+  }
+  CommentLikeCount(commentId: number) {
+    return this.http.post(`${this.apiUrl}/CommentLikes/CommentLikeCounts`,commentId);
+  }
+  getAllAttachments(postId: number[]) {
+    return this.http.post(`${this.apiUrl}/Posts/getallImage`,postId);
+  }
+  addContact(contact: any) {
+    return this.http.post(`${this.apiUrl}/ContactUs`,contact);
   }
 }

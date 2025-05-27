@@ -9,6 +9,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { EditProfileComponent } from './edit-profile/edit-profile.component';
 import { ContactComponent } from './contact/contact.component';
 import { AboutComponent } from './about/about.component';
+import { OtherProfileComponent } from './other-profile/other-profile.component';
 
 
 
@@ -20,6 +21,7 @@ import { AboutComponent } from './about/about.component';
     EditProfileComponent,
     ContactComponent,
     AboutComponent,
+    OtherProfileComponent,
   ],
   imports: [
     BrowserModule,

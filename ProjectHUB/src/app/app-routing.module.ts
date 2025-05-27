@@ -7,7 +7,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { EditProfileComponent } from './edit-profile/edit-profile.component';
 import { ContactComponent } from './contact/contact.component';
 import { AboutComponent } from './about/about.component';
-
+import { OtherProfileComponent } from './other-profile/other-profile.component';
  const routes:Routes=[
   {
     path:'home',
@@ -25,6 +25,10 @@ import { AboutComponent } from './about/about.component';
      {
     path:'updateprofile',
     component: EditProfileComponent
+  },
+  {
+    path:'otherProfile/:id',
+    component: OtherProfileComponent
   },
   {
     path:'contact',

@@ -1,387 +1,460 @@
 <div class="profile-page">
 
-<app-navbar></app-navbar>
- <mat-card class="profile-card1 ">
-  <div class="profile-body-container ">
-    <!-- Left Column: Profile + About + Experience -->
-    <div class="left-content ">
-     <div class="profile-card" >
-      <div
-        class="cover-image"
-        [ngStyle]="{
+  <app-navbar></app-navbar>
+  <mat-card class="profile-card1 ">
+    <div class="profile-body-container ">
+      <!-- Left Column: Profile + About + Experience -->
+      <div class="left-content ">
+        <div class="profile-card">
+          <div
+            class="cover-image"
+            [ngStyle]="{
           'background-image': userProfile?.backgroundPicture ? 'url(' + userProfile.backgroundPicture + ')' : '/assets/thumb-1920-516890.jpg'
-        }"
-      ></div>
-      <div class="profile-header text-center">
-        <img [src]="userProfile?.profilePicture" alt="Profile" class="profile-img" />
-        <div class="profile-info">
-          <h2>{{userProfile?.firstName}} {{userProfile?.lastName}} <mat-icon class="verified">verified</mat-icon></h2>
-          <p>{{userProfile?.email}}</p>
-          <div class="details">
-            Joined on {{ userProfile?.dateJoined | date: 'dd MMM yyyy' }}
+        }"></div>
+          <div class="profile-header text-center">
+            <img [src]="userProfile?.profilePicture" alt="Profile"
+              class="profile-img" />
+            <div class="profile-info">
+              <h2>{{userProfile?.firstName}} {{userProfile?.lastName}} <mat-icon
+                  class="verified">verified</mat-icon></h2>
+              <p>{{userProfile?.email}}</p>
+              <div class="details">
+                Joined on {{ userProfile?.dateJoined | date: 'dd MMM yyyy' }}
+              </div>
+            </div>
+            <div class="header-actions">
+              <button mat-stroked-button color="primary"
+                routerLink="/updateprofile">Edit profile</button>
+            </div>
           </div>
-        </div>
-        <div class="header-actions">
-          <button mat-stroked-button color="primary" routerLink="/updateprofile">Edit profile</button>
-        </div>
-      </div>
-      <mat-tab-group>
-        <mat-tab label="Feed">
-          <div class="post-container mat-elevation-z2">
+          <mat-tab-group>
+            <mat-tab label="Feed">
+              <div class="post-container mat-elevation-z2">
 
-            <mat-form-field appearance="outline" class="full-width">
-  <textarea matInput placeholder="Share your thoughts..." cdkTextareaAutosize
-    [(ngModel)]="postContent" name="postContent"></textarea>
-            </mat-form-field>
+                <mat-form-field appearance="outline" class="full-width">
+                  <textarea matInput placeholder="Share your thoughts..."
+                    cdkTextareaAutosize
+                    [(ngModel)]="postContent" name="postContent"></textarea>
+                </mat-form-field>
 
-            <div class="photos-section mt-4" *ngIf="postedPhotos.length > 0">
-              <div class="photos-grid">
-                <div class="photo-item" *ngFor="let photo of postedPhotos" >
-                  <img [src]="photo" class="img-fluid" alt="Posted photo" style="width: 100%; height: 500px;">
+                <div class="photos-section mt-4"
+                  *ngIf="postedPhotos.length > 0">
+                  <div class="photos-grid">
+                    <div class="photo-item" *ngFor="let photo of postedPhotos">
+                      <img [src]="photo" class="img-fluid" alt="Posted photo"
+                        style="width: 100%; height: 500px;">
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  class="post-options justify-content-between align-items-center d-flex flex-wrap gap-2">
+                  <div class="d-flex align-items-center gap-3 flex-wrap">
+                    <button mat-button (click)="fileInput.click()"
+                      class="d-flex align-items-center gap-1">
+                      <mat-icon>image</mat-icon>
+                      Photo
+                    </button>
+                    <input #fileInput type="file" accept="image/*"
+                      (change)="onFileSelected($event)" style="display: none;">
+
+                    <mat-form-field appearance="fill" class="category-select">
+                      <mat-label>{{ selectedCategory ?
+                        selectedCategory.categoryName : 'Category'
+                        }}</mat-label>
+                      <mat-select [(value)]="selectedCategory"
+                        (selectionChange)="onCategoryChange($event.value)">
+                        <mat-option *ngFor="let category of postCategories"
+                          [value]="category.categoryId">
+                          {{ category.categoryName }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+
+                  </div>
+
+                  <button type="button" class="btn text-white"
+                    style="background-color: rgb(17,20,45);"
+                    (click)="postPhoto()">Post</button>
                 </div>
               </div>
-            </div>
 
-            <div class="post-options justify-content-between align-items-center d-flex flex-wrap gap-2">
-              <div class="d-flex align-items-center gap-3 flex-wrap">
-              <button mat-button (click)="fileInput.click()" class="d-flex align-items-center gap-1">
-              <mat-icon>image</mat-icon>
-               Photo
-              </button>
-              <input #fileInput type="file" accept="image/*" (change)="onFileSelected($event)" style="display: none;">
+              <ng-container *ngIf="userPosts && userPosts.length > 0">
+                <mat-card class="post-card" *ngFor="let post of userPosts">
+                  <div
+                    class="post-header d-flex justify-content-between align-items-start">
+                    <div class="d-flex">
+                      <img [src]="post?.user.profilePicture" alt="User Avatar"
+                        class="post-avatar">
+                      <div class="post-user-info">
+                        <h3>{{post?.user.firstName}}
+                          {{post?.user.lastName}}</h3>
+                        <div class="post-meta">
+                          <span class="post-time">{{post.datePosted | timeago
+                            }}</span>
+                        </div>
+                      </div>
+                    </div>
 
-              <mat-form-field appearance="fill" class="category-select">
-              <mat-label>{{ selectedCategory ? selectedCategory.categoryName : 'Category' }}</mat-label>
-              <mat-select  [(value)]="selectedCategory" (selectionChange)="onCategoryChange($event.value)">
-                <mat-option *ngFor="let category of postCategories" [value]="category.categoryId">
-                  {{ category.categoryName }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
+                    <!-- Three-dot menu -->
+                    <button mat-icon-button [matMenuTriggerFor]="menu"
+                      aria-label="More options">
+                      <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu">
+                      <button mat-menu-item (click)="openEditPostDialog(post)">
+                        <mat-icon>edit</mat-icon>
+                        <span>Edit Post</span>
+                      </button>
+                      <button mat-menu-item
+                        (click)="openDeletePostDialog(post.postId)">
+                        <mat-icon>delete</mat-icon>
+                        <span>Remove Post</span>
+                      </button>
+                    </mat-menu>
+                  </div>
+                  <ng-template #callEditPostDialog>
+                    <div class="edit-post-dialog">
 
+                      <h3>Edit Post</h3>
+
+                      <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Content</mat-label>
+                        <textarea matInput [(ngModel)]="content"
+                          rows="4"></textarea>
+                      </mat-form-field>
+                      <mat-form-field appearance="fill" class="category-select">
+                        <mat-label>{{ 'Category' }}</mat-label>
+                        <mat-select [(value)]="categoryId"
+                          (selectionChange)="onCategoryEditChange($event.value)">
+                          <mat-option *ngFor="let category of postCategories"
+                            [value]="category.categoryId">
+                            {{ category.categoryName }}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                      <div class="image-section">
+                        <label *ngIf="picturePath !=null">Current Photo:</label>
+                        <div class="photo-item"
+                          *ngFor="let photo of postEditPhotos">
+                          <img [src]="photo" class="img-fluid"
+                            alt="Posted photo"
+                            style="width: 100%; height: 300px;">
+                        </div>
+
+                        <div class="upload-new">
+                          <label for="upload-photo">Change Photo:</label>
+                          <button mat-button (click)="fileInput.click()"
+                            class="d-flex align-items-center gap-1">
+                            <mat-icon>image</mat-icon>
+                            Photo
+                          </button>
+                          <input #fileInput type="file" accept="image/*"
+                            (change)="onEditImage($event)"
+                            style="display: none;">
+
+                        </div>
+                      </div>
+
+                      <div class="dialog-actions">
+                        <button mat-stroked-button
+                          mat-dialog-close>Cancel</button>
+                        <button mat-flat-button color="primary"
+                          (click)="saveEditPost()">Save</button>
+                      </div>
+                    </div>
+                  </ng-template>
+
+                  <ng-template #callDeletePostDialog>
+                    <div class="delete-dialog-content">
+                      <h3 class="dialog-title">Are you sure you want to delete
+                        this post?</h3>
+                      <p class="dialog-message">This action cannot be
+                        undone.</p>
+
+                      <div class="dialog-actions">
+                        <button mat-stroked-button color="primary"
+                          mat-dialog-close>Cancel</button>
+                        <button mat-flat-button color="warn"
+                          (click)="confirmDeletePost()">Delete</button>
+                      </div>
+                    </div>
+                  </ng-template>
+
+                  <div class="post-content">
+                    <p>{{ post.content }}</p>
+                    <div class="photo-post" *ngIf="post?.attachments.length>0">
+                      <img [src]="post?.attachments[0].attachmentPath"
+                        class="img-fluid" alt="Posted photo"
+                        style="width: 100%; max-height: 500px; object-fit: cover;">
+                    </div>
+                  </div>
+
+                  <div class="post-actions">
+                    <div class="action-buttons action-item">
+                      <button mat-icon-button
+                        (click)="isLiked(post.postId) ? deleteLike(post.postId) : toggleLike(post.postId)"
+                        style="width: 140px;">
+
+                        <mat-icon style="color: rgb(63,81,181);">
+                          {{ isLiked(post.postId) ? 'thumb_up' :
+                          'thumb_up_off_alt' }}
+                        </mat-icon>
+
+                        <span
+                          style="color: rgb(102,102,102); font-size: medium;">
+                          {{ isLiked(post.postId) ? 'Liked' : 'Like' }} ({{
+                          post?.postLikes.length || 0 }})
+                        </span>
+                      </button>
+
+                    </div>
+
+                    <div class="action-buttons action-item">
+                      <button mat-button (click)="toggleComments(post.postId)">
+                        <mat-icon
+                          style="color: rgb(102,102,102);">chat_bubble_outline</mat-icon>
+                        <span style="color: rgb(102,102,102);">Comments ({{
+                          post.comments?.length || 0 }})</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div *ngIf="commentVisibility[post.postId]">
+                    <div class="comment-input">
+                      <mat-form-field appearance="outline"
+                        class="full-width comment-field">
+                        <input matInput placeholder="Add a comment..."
+                          [(ngModel)]="commentText" />
+
+                        <!-- Image Upload Button -->
+                        <button mat-icon-button matSuffix color="accent"
+                          (click)="imageInput.click()"
+                          matTooltip="Attach image">
+                          <mat-icon>image</mat-icon>
+                        </button>
+
+                        <!-- Send Button -->
+                        <button mat-icon-button matSuffix color="primary"
+                          matTooltip="Send" (click)="sendComment(post.postId)">
+                          <mat-icon>send</mat-icon>
+                        </button>
+                      </mat-form-field>
+
+                      <input type="file" #imageInput hidden
+                        (change)="onCommentImageSelected($event)" />
+
+                      <!-- Image preview -->
+                      <div *ngIf="commentImage" class="image-preview">
+                        <img [src]="commentImage" alt="preview" />
+                        <button mat-icon-button color="warn" class="remove-btn"
+                          (click)="removeCommentImage()">
+                          <mat-icon>close</mat-icon>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div class="existing-comment"
+                      *ngFor="let comment of post.comments">
+                      <div
+                        class="comment-header d-flex justify-between align-center">
+                        <div class="comment-left d-flex">
+                          <img [src]="comment?.user.profilePicture"
+                            alt="profilePicture" class="comment-avatar">
+                          <div class="comment-user-info">
+                            <h4>{{comment?.user.firstName}}
+                              {{comment?.user.lastName}}</h4>
+                            <span class="comment-time">{{comment?.datePosted |
+                              timeago }}</span>
+                          </div>
+                        </div>
+
+                        <button mat-icon-button
+                          [matMenuTriggerFor]="commentMenu">
+                          <mat-icon>more_vert</mat-icon>
+                        </button>
+
+                        <mat-menu #commentMenu="matMenu" class="small-menu">
+                          <button mat-menu-item
+                            (click)="openEditCommentDialog(comment)">
+                            <mat-icon class="small-icon">edit</mat-icon>
+                            <span class="small-text">Edit</span>
+                          </button>
+                          <button mat-menu-item
+                            (click)="openDeleteCommentDialog(comment.commentId)">
+                            <mat-icon class="small-icon">delete</mat-icon>
+                            <span class="small-text">Delete</span>
+                          </button>
+                        </mat-menu>
+
+                      </div>
+                      <ng-template #callEditCommentDialog>
+                        <div class="edit-comment-dialog">
+                          <h3 class="dialog-title">Edit Comment</h3>
+
+                          <mat-form-field appearance="outline"
+                            class="full-width">
+                            <mat-label>Comment</mat-label>
+                            <textarea
+                              matInput
+                              [(ngModel)]="editedCommentText"
+                              placeholder="Edit your comment"
+                              rows="3"></textarea>
+                          </mat-form-field>
+
+                          <!-- Photo upload button -->
+                          <div class="photo-upload-container">
+                            <input type="file" #photoInput hidden
+                              (change)="onPhotoSelected($event)" />
+                            <button mat-icon-button color="accent"
+                              (click)="photoInput.click()"
+                              matTooltip="Add photo">
+                              <mat-icon>image</mat-icon>
+                            </button>
+
+                            <!-- Photo preview -->
+                            <div *ngIf="editedCommentPhoto"
+                              class="photo-preview">
+                              <img [src]="editedCommentPhoto"
+                                alt="Photo Preview" />
+                              <button mat-icon-button color="warn"
+                                class="remove-btn" (click)="removePhoto()">
+                                <mat-icon>close</mat-icon>
+                              </button>
+                            </div>
+                          </div>
+
+                          <div class="dialog-actions">
+                            <button mat-stroked-button color="primary"
+                              mat-dialog-close>Cancel</button>
+                            <button mat-flat-button color="accent"
+                              (click)="saveEditedComment()">Save</button>
+                          </div>
+                        </div>
+                      </ng-template>
+
+                      <ng-template #callDeleteCommentDialog>
+                        <div class="delete-dialog-content">
+                          <h3 class="dialog-title">Are you sure you want to
+                            delete this comment?</h3>
+                          <p class="dialog-message">This action cannot be
+                            undone.</p>
+
+                          <div class="dialog-actions">
+                            <button mat-stroked-button color="primary"
+                              mat-dialog-close>Cancel</button>
+                            <button mat-flat-button color="warn"
+                              (click)="confirmDeleteComment()">Delete</button>
+                          </div>
+                        </div>
+                      </ng-template>
+                      <div class="comment-container">
+                        <div class="comment-text">
+                          <p>{{ comment?.content }}</p>
+                        </div>
+                        <div *ngIf="comment?.attachments.length>0"
+                          class="comment-photo">
+                          <img [src]="comment.attachments[0].attachmentPath"
+                            alt="Comment photo" />
+                        </div>
+                      </div>
+
+                      <div class="comment-footer">
+                        <button mat-icon-button
+                          (click)="isCommentLiked(comment.commentId)?deleteCommentLike(comment.commentId):addCommentLike(comment.commentId)">
+                          <mat-icon style="color: rgb(63,81,181);">
+                            {{ isCommentLiked(comment.commentId) ? 'thumb_up' :
+                            'thumb_up_off_alt' }}
+                          </mat-icon>
+                        </button>
+                        <span>{{ isCommentLiked(comment.commentId) ? 'Liked' :
+                          'Like' }} ({{comment.commentLikes.length || 0
+                          }})</span>
+                      </div>
+                    </div>
+                  </div>
+                </mat-card>
+              </ng-container>
+
+            </mat-tab>
+            <mat-tab label="About">
+              <div class="about-card">
+                <h3>About</h3>
+                <p>{{userProfile?.brif || 'No bio available' }}</p>
+                <p><mat-icon>email</mat-icon> Email:
+                  <strong>{{userProfile?.email || 'Not provided' }}</strong></p>
+                <p><mat-icon>work</mat-icon> {{userProfile?.job ||
+                  'Not specified' }}</p>
+                <p><mat-icon>location_on</mat-icon> {{userProfile?.address ||
+                  'No location info' }}</p>
+                <p><mat-icon>phone</mat-icon> {{ userProfile?.phoneNumber ||
+                  'No phone number' }}</p>
               </div>
 
-              <button type="button" class="btn text-white" style="background-color: rgb(17,20,45);" (click)="postPhoto()">Post</button>
-            </div>
-          </div>
-
-
-         <ng-container *ngIf="userPosts && userPosts.length > 0">
-          <mat-card class="post-card" *ngFor="let post of userPosts">
-            <div class="post-header d-flex justify-content-between align-items-start">
-          <div class="d-flex">
-            <img [src]="post?.user.profilePicture" alt="User Avatar" class="post-avatar">
-            <div class="post-user-info">
-              <h3>{{post?.user.firstName}} {{post?.user.lastName}}</h3>
-              <div class="post-meta">
-                <span class="post-time">{{post.datePosted | timeago }}</span>
+            </mat-tab>
+            <mat-tab label="Media">
+              <div class="media-container"
+                *ngIf="mediaUrls.length > 0; else noMedia">
+                <div class="media-grid">
+                  <div class="media-item" *ngFor="let img of mediaUrls"
+                    (click)="openDialog(img)">
+                    <img [src]="img" alt="User media" />
+                  </div>
+                </div>
               </div>
+
+              <ng-template #noMedia>
+                <div class="media-card no-media">
+                  <p>No Media yet.</p>
+                </div>
+              </ng-template>
+
+              <!-- Dialog Template -->
+              <ng-template #callImageDialog let-data>
+                <div class="image-dialog">
+                  <img [src]="selectedImage" alt="Full View" />
+                </div>
+              </ng-template>
+            </mat-tab>
+
+          </mat-tab-group>
+
+        </div>
+      </div>
+
+      <!-- Right Column: Tabs -->
+      <div class="right-sidebar">
+
+        <mat-card class="about-card">
+          <h3>About</h3>
+          <p>
+            {{userProfile?.brif || 'No bio available' }}
+          </p>
+          <p><mat-icon>email</mat-icon> Email: <strong>{{userProfile?.email ||
+              'Not provided' }}</strong></p>
+          <p><mat-icon>work</mat-icon> {{userProfile?.job || 'Not specified'
+            }}</p>
+          <p><mat-icon>location_on</mat-icon> {{userProfile?.address ||
+            'No location info' }}</p>
+          <p><mat-icon>phone</mat-icon> {{ userProfile?.phoneNumber ||
+            'No phone number' }}</p>
+
+        </mat-card>
+
+        <mat-card class="experience-card">
+          <h3>Experience</h3>
+          <div class="job">
+            <mat-icon class="job-icon">chat</mat-icon>
+            <div>
+              <p><strong>Apple Computer, Inc.</strong></p>
+              <p>May 2015 – Present Employment</p>
+              <p>Duration: 8 mos</p>
             </div>
           </div>
+        </mat-card>
 
-  <!-- Three-dot menu -->
-  <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="More options">
-    <mat-icon>more_vert</mat-icon>
-  </button>
-  <mat-menu #menu="matMenu" >
-    <button mat-menu-item (click)="openEditPostDialog(post)">
-      <mat-icon>edit</mat-icon>
-      <span>Edit Post</span>
-    </button>
-    <button mat-menu-item (click)="openDeletePostDialog(post.postId)">
-      <mat-icon>delete</mat-icon>
-      <span>Remove Post</span>
-    </button>
-  </mat-menu>
-</div>
-<ng-template #callEditPostDialog>
-   <div class="edit-post-dialog">
-
-    <h3>Edit Post</h3>
-
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Content</mat-label>
-      <textarea matInput [(ngModel)]="content" rows="4" ></textarea>
-    </mat-form-field>
- <mat-form-field appearance="fill" class="category-select">
-              <mat-label>{{ 'Category' }}</mat-label>
-              <mat-select  [(value)]="categoryId" (selectionChange)="onCategoryEditChange($event.value)">
-                <mat-option *ngFor="let category of postCategories" [value]="category.categoryId">
-                  {{ category.categoryName }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-    <div class="image-section">
-      <label *ngIf="picturePath !=null">Current Photo:</label>
-       <div class="photo-item" *ngFor="let photo of postEditPhotos" >
-                  <img [src]="photo" class="img-fluid" alt="Posted photo" style="width: 100%; height: 300px;">
-        </div>
-
-      <div class="upload-new">
-        <label for="upload-photo">Change Photo:</label>
-                      <button mat-button (click)="fileInput.click()" class="d-flex align-items-center gap-1">
-              <mat-icon>image</mat-icon>
-               Photo
-              </button>
-        <input #fileInput type="file" accept="image/*" (change)="onEditImage($event)" style="display: none;">
-       
       </div>
-    </div>
-
-    <div class="dialog-actions">
-      <button mat-stroked-button mat-dialog-close>Cancel</button>
-      <button mat-flat-button color="primary" (click)="saveEditPost()">Save</button>
-    </div>
-  </div>
-</ng-template>
-
-<ng-template #callDeletePostDialog>
-  <div class="delete-dialog-content">
-    <h3 class="dialog-title">Are you sure you want to delete this post?</h3>
-    <p class="dialog-message">This action cannot be undone.</p>
-
-    <div class="dialog-actions">
-      <button mat-stroked-button color="primary" mat-dialog-close>Cancel</button>
-      <button mat-flat-button color="warn" (click)="confirmDeletePost()">Delete</button>
-    </div>
-  </div>
-</ng-template>
-
-    <div class="post-content">
-      <p>{{ post.content }}</p>
-       <div class="photo-post" *ngIf="post?.attachments.length>0">
-            <img [src]="post?.attachments[0].attachmentPath" 
-            class="img-fluid" alt="Posted photo"  style="width: 100%; max-height: 500px; object-fit: cover;">
-        </div>
-    </div>
-
- <div class="post-actions">
-  <div class="action-buttons action-item">
-   <button mat-icon-button 
-  (click)="isLiked(post.postId) ? deleteLike(post.postId) : toggleLike(post.postId)" 
-  style="width: 140px;">
-  
-  <mat-icon style="color: rgb(63,81,181);">
-    {{ isLiked(post.postId) ? 'thumb_up' : 'thumb_up_off_alt' }}
-  </mat-icon>
-  
-  <span style="color: rgb(102,102,102); font-size: medium;">
-    {{ isLiked(post.postId) ? 'Liked' : 'Like' }} ({{ post?.postLikes.length || 0 }})
-  </span>
-</button>
-
-  </div>
-
-  <div class="action-buttons action-item">
-    <button mat-button (click)="toggleComments(post.postId)">
-      <mat-icon style="color: rgb(102,102,102);">chat_bubble_outline</mat-icon>
-      <span style="color: rgb(102,102,102);">Comments ({{ post.comments?.length || 0 }})</span>
-    </button>
-  </div>
-</div>
-
-
-    <div *ngIf="commentVisibility[post.postId]">
-<div class="comment-input">
-  <mat-form-field appearance="outline" class="full-width comment-field">
-    <input matInput placeholder="Add a comment..." [(ngModel)]="commentText" />
-
-    <!-- Image Upload Button -->
-    <button mat-icon-button matSuffix color="accent" (click)="imageInput.click()" matTooltip="Attach image">
-      <mat-icon>image</mat-icon>
-    </button>
-
-    <!-- Send Button -->
-    <button mat-icon-button matSuffix color="primary" matTooltip="Send" (click)="sendComment(post.postId)">
-      <mat-icon>send</mat-icon>
-    </button>
-  </mat-form-field>
-
-  <input type="file" #imageInput hidden (change)="onCommentImageSelected($event)" />
-
-  <!-- Image preview -->
-  <div *ngIf="commentImage" class="image-preview">
-    <img [src]="commentImage" alt="preview" />
-    <button mat-icon-button color="warn" class="remove-btn" (click)="removeCommentImage()">
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
-</div>
-
-
-
-     <div class="existing-comment" *ngFor="let comment of post.comments">
-  <div class="comment-header d-flex justify-between align-center">
-  <div class="comment-left d-flex">
-    <img [src]="comment?.user.profilePicture" alt="profilePicture" class="comment-avatar">
-    <div class="comment-user-info">
-      <h4>{{comment?.user.firstName}} {{comment?.user.lastName}}</h4>
-      <span class="comment-time">{{comment?.datePosted | timeago }}</span>
-    </div>
-  </div>
-
-  <button mat-icon-button [matMenuTriggerFor]="commentMenu">
-    <mat-icon>more_vert</mat-icon>
-  </button>
-
-<mat-menu #commentMenu="matMenu" class="small-menu">
-  <button mat-menu-item (click)="openEditCommentDialog(comment)">
-    <mat-icon class="small-icon">edit</mat-icon>
-    <span class="small-text">Edit</span>
-  </button>
-  <button mat-menu-item (click)="openDeleteCommentDialog(comment.commentId)">
-    <mat-icon class="small-icon">delete</mat-icon>
-    <span class="small-text">Delete</span>
-  </button>
-</mat-menu>
-
-</div>
-<ng-template #callEditCommentDialog>
-  <div class="edit-comment-dialog">
-    <h3 class="dialog-title">Edit Comment</h3>
-
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Comment</mat-label>
-      <textarea
-        matInput
-        placeholder="Edit your comment"
-        rows="3"
-      ></textarea>
-    </mat-form-field>
-
-    <!-- Photo upload button -->
-    <div class="photo-upload-container">
-      <input type="file" #photoInput hidden (change)="onPhotoSelected($event)" />
-      <button mat-icon-button color="accent" (click)="photoInput.click()" matTooltip="Add photo">
-        <mat-icon>image</mat-icon>
-      </button>
-
-      <!-- Photo preview -->
-      <div *ngIf="editedCommentPhoto" class="photo-preview">
-        <img [src]="editedCommentPhoto" alt="Photo Preview" />
-        <button mat-icon-button color="warn" class="remove-btn" (click)="removePhoto()">
-          <mat-icon>close</mat-icon>
-        </button>
-      </div>
-    </div>
-
-    <div class="dialog-actions">
-      <button mat-stroked-button color="primary" mat-dialog-close>Cancel</button>
-      <button mat-flat-button color="accent" (click)="saveEditedComment()">Save</button>
-    </div>
-  </div>
-</ng-template>
-
-<ng-template #callDeleteCommentDialog>
-  <div class="delete-dialog-content">
-    <h3 class="dialog-title">Are you sure you want to delete this comment?</h3>
-    <p class="dialog-message">This action cannot be undone.</p>
-
-    <div class="dialog-actions">
-      <button mat-stroked-button color="primary" mat-dialog-close>Cancel</button>
-      <button mat-flat-button color="warn" (click)="confirmDeleteComment(comment.commentId)">Delete</button>
-    </div>
-  </div>
-</ng-template>
-<div class="comment-container">
-  <div class="comment-text">
-    <p>{{ comment?.content }}</p>
-  </div>
-  <div *ngIf="comment?.attachments.length>0" class="comment-photo">
-    <img [src]="comment.attachments[0].attachmentPath" alt="Comment photo" />
-  </div>
-</div>
-
-
-  <div class="comment-footer">
-    <button mat-icon-button (click)="isCommentLiked(comment.commentId)?deleteCommentLike(comment.commentId):addCommentLike(comment.commentId)">
-      <mat-icon style="color: rgb(63,81,181);">
-        {{ isCommentLiked(comment.commentId) ? 'thumb_up' : 'thumb_up_off_alt' }}
-      </mat-icon>
-    </button>
-    <span>{{ isCommentLiked(comment.commentId) ? 'Liked' : 'Like' }}  ({{comment.commentLikes.length || 0 }})</span>
-  </div>
-</div>
     </div>
   </mat-card>
-</ng-container>
-
-
-        </mat-tab>
-        <mat-tab label="About">
-            <div class="about-card">
-          <h3>About</h3>
-            <p>{{userProfile?.brif || 'No bio available' }}</p>
-            <p><mat-icon>email</mat-icon> Email: <strong>{{userProfile?.email || 'Not provided' }}</strong></p>
-            <p><mat-icon>work</mat-icon> {{userProfile?.job || 'Not specified' }}</p>
-            <p><mat-icon>location_on</mat-icon> {{userProfile?.address || 'No location info' }}</p>
-            <p><mat-icon>phone</mat-icon> {{ userProfile?.phoneNumber || 'No phone number' }}</p>
-          </div>
-        
-        </mat-tab>
-        <mat-tab label="Media">
-          <div class="media-container" *ngIf="mediaUrls.length > 0; else noMedia">
-            <div class="media-grid">
-              <div class="media-item" *ngFor="let img of mediaUrls" (click)="openDialog(img)">
-                <img [src]="img" alt="User media" />
-              </div>
-            </div>
-          </div>
-        
-          <ng-template #noMedia>
-            <div class="media-card no-media">
-              <p>No Media yet.</p>
-            </div>
-          </ng-template>
-        
-          <!-- Dialog Template -->
-          <ng-template #callImageDialog let-data>
-            <div class="image-dialog">
-              <img [src]="selectedImage" alt="Full View" />
-            </div>
-          </ng-template>
-        </mat-tab>
-        
-        
-      </mat-tab-group>
-
-    </div>
-    </div>
-
-    <!-- Right Column: Tabs -->
-    <div class="right-sidebar">
-
-         <mat-card class="about-card">
-        <h3>About</h3>
-        <p>
-           {{userProfile?.brif || 'No bio available' }}
-        </p>
-        <p><mat-icon>email</mat-icon> Email: <strong>{{userProfile?.email || 'Not provided'  }}</strong></p>
-         <p><mat-icon>work</mat-icon> {{userProfile?.job || 'Not specified' }}</p>
-        <p><mat-icon>location_on</mat-icon> {{userProfile?.address || 'No location info' }}</p>
-        <p><mat-icon>phone</mat-icon> {{ userProfile?.phoneNumber || 'No phone number'  }}</p>
-
-      </mat-card>
-
-      <mat-card class="experience-card">
-        <h3>Experience</h3>
-        <div class="job">
-          <mat-icon class="job-icon">chat</mat-icon>
-          <div>
-            <p><strong>Apple Computer, Inc.</strong></p>
-            <p>May 2015 – Present Employment</p>
-            <p>Duration: 8 mos</p>
-          </div>
-        </div>
-      </mat-card>
-    
-    </div>
-  </div>
-</mat-card>
 
 </div>
-
-
-
-
-

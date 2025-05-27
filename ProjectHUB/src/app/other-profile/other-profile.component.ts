@@ -3,96 +3,56 @@ import { HomeService } from '../services/home.service';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-
+import { ActivatedRoute } from '@angular/router';
 declare var bootstrap: any;
 
+
 @Component({
-  selector: 'app-profile',
-  templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.css'],
+  selector: 'app-other-profile',
+  templateUrl: './other-profile.component.html',
+  styleUrls: ['./other-profile.component.css']
 })
-export class ProfileComponent {
+export class OtherProfileComponent {
   private modal: any;
   dialogRef!: MatDialogRef<any>;
 
   constructor(
     private homeService: HomeService,
     private toastr: ToastrService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private route: ActivatedRoute
   ) {}
-  @ViewChild('callEditPostDialog') EditPostDialog!: TemplateRef<any>;
-  @ViewChild('callDeletePostDialog') DeletePostDialog!: TemplateRef<any>;
   @ViewChild('callEditCommentDialog') EditCommentDialog!: TemplateRef<any>;
   @ViewChild('callDeleteCommentDialog') DeleteCommentDialog!: TemplateRef<any>;
   @ViewChild('callImageDialog') ImageDialog!: TemplateRef<any>;
-
   ngAfterViewInit() {
     this.modal = new bootstrap.Modal(
       document.getElementById('photoUploadModal')
     );
   }
-
   userId: number | undefined;
-  postId = 0;
-  content = '';
-  picturePath = null;
-  postEditPhotos: string[] = [];
-  categoryId = 0;
+  otherUserId: number | undefined;
   ngOnInit(): void {
-    this.userId = Number(localStorage.getItem('userId'));
-    console.log(this.userId);
-    if (this.userId) {
+    this.route.paramMap.subscribe(params => {
+      this.otherUserId = +params.get('id')!;
+      this.userId = +localStorage.getItem('userId')!;
       this.getUserData();
       this.getUserPosts();
-      this.getPostCategories();
       this.UserPostLike();
       this.UserCommentLike();
-    }
+    });
   }
-
   userProfile: any = null;
   getUserData() {
-    this.homeService.getUserData(this.userId!).subscribe(
-      (result: any) => {
-        if (result) {
-          this.userProfile = result;
-          console.log(this.userProfile);
-        }
-      },
-      (error) => {
-        this.toastr.error('Something went wrong. Please try again.');
-      }
-    );
+    this.homeService.getUserData(this.otherUserId!).subscribe((result: any) => {
+      this.userProfile = result;
+    });
   }
-
-  postCategories: any[] = [];
-  selectedCategory: any = null;
-  onCategoryChange(value: any) {
-    this.selectedCategory = value;
-  }
-  onCategoryEditChange(value: any) {
-    this.categoryId = value;
-  }
-  getPostCategories() {
-    this.homeService.getPostCategories().subscribe(
-      (result: any) => {
-        if (result) {
-          this.postCategories = result;
-          console.log(this.postCategories);
-        }
-      },
-      (error) => {
-        this.toastr.error('Failed to get categories');
-      }
-    );
-  }
-
   userPosts: any = null;
   postsCount: number = 0;
-
   getUserPosts(): void {
  
-    this.homeService.getUserPosts(this.userId!).subscribe(
+    this.homeService.getUserPosts(this.otherUserId!).subscribe(
       (result: any) => {
         if (result) {
           this.userPosts = result.sort(
@@ -120,195 +80,7 @@ export class ProfileComponent {
   selectedImageFile: File | null = null;
   postedPhotos: string[] = [];
   postContent: string = '';
-
-  // Add image validation properties
-  readonly maxFileSize = 5 * 1024 * 1024; // 5MB
-  readonly allowedFileTypes = ['image/jpeg', 'image/png', 'image/gif'];
-
-  onFileSelected(event: any) {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    // Validate file type
-    if (!this.allowedFileTypes.includes(file.type)) {
-      this.toastr.error('Please upload only images (JPEG, PNG, or GIF)');
-      return;
-    }
-
-    // Validate file size
-    if (file.size > this.maxFileSize) {
-      this.toastr.error('File size should not exceed 5MB');
-      return;
-    }
-
-    this.selectedImageFile = file;
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      this.postedPhotos = [reader.result as string];
-    };
-
-    reader.onerror = () => {
-      this.toastr.error('Error reading file');
-      this.selectedImageFile = null;
-      this.postedPhotos = [];
-    };
-
-    reader.readAsDataURL(file);
-  }
-
-  removeSelectedImage() {
-    this.selectedImageFile = null;
-    this.postedPhotos = [];
-  }
-  onEditImage(event: any) {
-    const file = event.target.files[0];
-    if (file) {
-      this.picturePath = file;
-
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.postEditPhotos = [reader.result as string];
-      };
-      reader.readAsDataURL(file);
-    }
-  }
-  postPhoto() {
-    if (!this.selectedCategory) {
-      this.toastr.warning('Please select a category');
-      return;
-    }
-
-    const formData = {
-      content: this.postContent,
-      categoryId: this.selectedCategory,
-      userId: this.userId!.toString(),
-      PostPictures: this.selectedImageFile ? [this.selectedImageFile] : []
-    };
-
-    this.homeService.AddPost(formData).subscribe({
-      next: () => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Success!',
-          text: 'Post added successfully',
-          timer: 2000,
-          showConfirmButton: false,
-        });
-
-        // Reset form
-        this.postContent = '';
-        this.postedPhotos = [];
-        this.selectedImageFile = null;
-        this.selectedCategory = null;
-
-        // Refresh posts
-        this.getUserPosts();
-
-        // Close modal
-        const modalEl = document.getElementById('photoUploadModal');
-        if (modalEl) {
-          const modalInstance = bootstrap.Modal.getInstance(modalEl);
-          modalInstance?.hide();
-        }
-        this.getUserPosts();
-      },
-      error: (error) => {
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: error.message || 'Failed to add post',
-          confirmButtonColor: '#d33',
-        });
-      },
-    });
-  }
-
-  openEditPostDialog(post: any) {
-    this.postEditPhotos = [];
-    if (post.attachments.length > 0)
-      this.postEditPhotos.push(post.attachments[0].attachmentPath);
-    this.postId = post.postId;
-    this.content = post.content;
-    this.picturePath = null;
-    this.categoryId = post.categoryId;
-    this.dialog.open(this.EditPostDialog);
-  }
-
-  saveEditPost() {
-    const post = {
-      contant: this.content,
-      categoryId: this.categoryId,
-      postId: this.postId,
-      PostPictures: this.picturePath ? [this.picturePath] : [],
-    };
-
-    this.homeService.UpdatePost(post).subscribe({
-      next: () => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Success!',
-          text: 'Post updated successfully',
-          timer: 2000,
-          showConfirmButton: false,
-        });
-
-        this.picturePath = null;
-
-        const modalEl = document.getElementById('photoUploadModal');
-        if (modalEl) {
-          const modalInstance = bootstrap.Modal.getInstance(modalEl);
-          modalInstance?.hide();
-        }
-        this.getUserPosts();
-        this.dialog.closeAll();
-      },
-      error: () => {
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: 'Failed to update post',
-          confirmButtonColor: '#d33',
-        });
-      },
-    });
-  }
-  openDeletePostDialog(postId: number) {
-    this.postId = postId;
-    this.dialog.open(this.DeletePostDialog);
-  }
-  confirmDeletePost() {
-    this.homeService.deletePost(this.postId).subscribe({
-      next: () => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Success!',
-          text: 'Post deleted successfully',
-          timer: 2000,
-          showConfirmButton: false,
-        });
-
-        this.picturePath = null;
-
-        const modalEl = document.getElementById('photoUploadModal');
-        if (modalEl) {
-          const modalInstance = bootstrap.Modal.getInstance(modalEl);
-          modalInstance?.hide();
-        }
-        this.getUserPosts();
-        this.dialog.closeAll();
-      },
-      error: () => {
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: 'Failed to delete post',
-          confirmButtonColor: '#d33',
-        });
-      },
-    });
-  }
-
+  picturePath: string | null = null;
   //COMMENT
   commentImage: string | ArrayBuffer | null = null;
   commentText: string = '';
@@ -544,7 +316,6 @@ export class ProfileComponent {
     }
     return false;
   }
-
   selectedImage: string = '';
 
   openDialog(imageUrl: string): void {
@@ -558,7 +329,7 @@ export class ProfileComponent {
     this.homeService.PostLikeCount(postId).subscribe((result) => {
       this.postLikeCountmap = result;
     });
-    this.homeService.getUserPosts(this.userId!).subscribe(
+    this.homeService.getUserPosts(this.otherUserId!).subscribe(
       (result: any) => {
         if (result) {
           this.userPosts = result.sort(
@@ -579,7 +350,7 @@ export class ProfileComponent {
     this.homeService.CommentLikeCount(commentId).subscribe((result) => {
       this.commetLikeCountmap = result;
     });
-    this.homeService.getUserPosts(this.userId!).subscribe(
+    this.homeService.getUserPosts(this.otherUserId!).subscribe(
       (result: any) => {
         if (result) {
           this.userPosts = result.sort(

@@ -193,18 +193,17 @@
                   <div class="post-actions">
                     <div class="action-buttons action-item">
                       <button mat-icon-button
-                        (click)="isLiked(post.postId) ? deleteLike(post.postId) : toggleLike(post.postId)"
+                        (click)="isLiked(post?.postId) ? deleteLike(post?.postId) : toggleLike(post?.postId)"
                         style="width: 140px;">
 
                         <mat-icon style="color: rgb(63,81,181);">
-                          {{ isLiked(post.postId) ? 'thumb_up' :
+                          {{ isLiked(post?.postId) ? 'thumb_up' :
                           'thumb_up_off_alt' }}
                         </mat-icon>
 
                         <span
                           style="color: rgb(102,102,102); font-size: medium;">
-                          {{ isLiked(post.postId) ? 'Liked' : 'Like' }} ({{
-                          post?.postLikes.length || 0 }})
+                          {{ isLiked(post?.postId) ? 'Liked' : 'Like' }} ({{getLikeCount(post?.postId)}})
                         </span>
                       </button>
 
@@ -368,8 +367,7 @@
                           </mat-icon>
                         </button>
                         <span>{{ isCommentLiked(comment.commentId) ? 'Liked' :
-                          'Like' }} ({{comment.commentLikes.length || 0
-                          }})</span>
+                          'Like' }} ({{ getCommentLikeCount(comment.commentId)}})</span>
                       </div>
                     </div>
                   </div>
@@ -394,9 +392,9 @@
             </mat-tab>
             <mat-tab label="Media">
               <div class="media-container"
-                *ngIf="mediaUrls.length > 0; else noMedia">
+                *ngIf="allAttachments.length > 0; else noMedia">
                 <div class="media-grid">
-                  <div class="media-item" *ngFor="let img of mediaUrls"
+                  <div class="media-item" *ngFor="let img of allAttachments"
                     (click)="openDialog(img)">
                     <img [src]="img" alt="User media" />
                   </div>
@@ -441,17 +439,13 @@
 
         </mat-card>
 
-        <mat-card class="experience-card">
-          <h3>Experience</h3>
-          <div class="job">
-            <mat-icon class="job-icon">chat</mat-icon>
-            <div>
-              <p><strong>Apple Computer, Inc.</strong></p>
-              <p>May 2015 – Present Employment</p>
-              <p>Duration: 8 mos</p>
-            </div>
+        <mat-card class="qr-code-card" *ngIf="userProfile?.quickAccessQrcode">
+          <h3 class="qr-title">My QR Code</h3>
+          <div class="qr-code-wrapper">
+            <img [src]="userProfile?.quickAccessQrcode" alt="QR Code" class="qr-image" />
           </div>
         </mat-card>
+        
 
       </div>
     </div>

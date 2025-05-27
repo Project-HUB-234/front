@@ -1,12 +1,25 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { AuthService } from '../services/auth.service';
+import Swal from 'sweetalert2';
+import { error } from 'jquery';
+import { HomeService } from '../services/home.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-edit-profile',
   templateUrl: './edit-profile.component.html',
   styleUrls: ['./edit-profile.component.css']
 })
-export class EditProfileComponent {
-  
+export class EditProfileComponent implements OnInit {
+
+  constructor(private authService: AuthService, private homeService: HomeService, private toastr: ToastrService) {}
+  userId: number | undefined;
+  ngOnInit() {
+    this.userId = Number(localStorage.getItem('userId'));
+    if(this.userId){
+      this.getUserData();
+    }
+  }
   user = {
     Email: 'user@example.com',
     FirstName: 'John',
@@ -21,11 +34,27 @@ export class EditProfileComponent {
     Job: '',
   };
 
-  passwords = {
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: '',
-  };
+
+    currentPassword= ''
+    newPassword= ''
+    confirmPassword= ''
+    userProfile: any = null;
+    getUserData() {
+      this.homeService.getUserData(this.userId!).subscribe(
+        (result: any) => {
+          if (result) {
+            this.userProfile = result;
+            console.log(this.userProfile);
+          }
+        },
+        (error) => {
+          this.toastr.error('Something went wrong. Please try again.');
+        }
+      );
+    }
+    background : File | null =null;
+    QR : File | null =null;
+    Profile : File | null =null;
 
   onProfilePicSelected(event: any) {
     const file = event.target.files[0];
@@ -33,7 +62,8 @@ export class EditProfileComponent {
       // Preview image (optional)
       const reader = new FileReader();
       reader.onload = (e: any) => {
-        this.user.ProfilePicture = e.target.result;
+        this.Profile =file
+        this.userProfile.profilePicture = e.target.result;
       };
       reader.readAsDataURL(file);
       // Upload logic can be added here
@@ -43,25 +73,96 @@ export class EditProfileComponent {
   onBackgroundPicSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
+      this.background=file
       const reader = new FileReader();
       reader.onload = (e: any) => {
-        this.user.BackgroundPicture = e.target.result;
+        this.userProfile.backgroundPicture = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+  onQRPicSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      this.QR=file
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.userProfile.quickAccessQrcode = e.target.result;
       };
       reader.readAsDataURL(file);
     }
   }
 
   onSubmitProfile() {
-    console.log('Profile saved', this.user);
-    // Call your API to save profile info here
+    const data = {
+      userId:this.userProfile.userId,
+      email:this.userProfile.email,
+      firstName:this.userProfile.firstName,
+      lastName:this.userProfile.lastName,
+      phoneNumber:this.userProfile.phoneNumber,
+      brif:this.userProfile.brif,
+      address:this.userProfile.address,
+      profilePicture:this.Profile,
+      quickAccessQrcode:this.QR,
+      backgroundPicture:this.background,
+      job:this.userProfile.job,
+    };
+    this.homeService.updateProfile(data).subscribe({
+      next: () => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Success!',
+          text: 'Personal data updated successfully',
+          timer: 2000,
+          showConfirmButton: false,
+        });
+        this.getUserData();
+      },
+      error: () => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Failed to update user data',
+          confirmButtonColor: '#d33',
+        });
+      },
+    });
+
+
+
+
+
   }
 
   onSubmitPassword() {
-    if (this.passwords.newPassword !== this.passwords.confirmPassword) {
-      alert('New passwords do not match!');
-      return;
+    const password = {
+      oldPassword: this.currentPassword,
+      newPassword: this.newPassword,
+      confirmPassword: this.confirmPassword,
+      userId: this.userId
     }
-    console.log('Change password request:', this.passwords);
-    // Call your API to change password here
-  }
-}
+      this.authService.changePassword(password).subscribe({
+        next: () => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'Password changed successfully',
+            timer: 2000,
+            showConfirmButton: false,
+          });
+        
+          this.currentPassword=''
+          this.newPassword= ''
+          this.confirmPassword= ''
+
+        },
+        error: () => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Failed to change password',
+            confirmButtonColor: '#d33',
+          });
+        },
+      });
+}}

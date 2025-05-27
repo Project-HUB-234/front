@@ -115,4 +115,30 @@ export class HomeService {
     }
     return this.http.put(`${this.apiUrl}/Comment`, formData);
   }
+
+  updateProfile(userData:any){
+    const formData = new FormData();
+    formData.append('UserId', userData.userId);
+    formData.append('UserName', userData.email);
+    formData.append('FirstName', userData.firstName);
+    formData.append('LastName', userData.lastName);
+    formData.append('PhoneNumber', userData.phoneNumber);
+    formData.append('Brif', userData.brif);
+    formData.append('Address', userData.address);
+    formData.append('Job', userData.job);
+
+    const file1 = userData.profilePicture as File;
+    if (file1) {
+      formData.append('ProfilePicture', file1, file1.name);
+    }
+    const file2 = userData.quickAccessQrcode as File;
+    if (file2) {
+      formData.append('QuickAccessQrcode', file2, file2.name);
+    } 
+       const file3 = userData.backgroundPicture as File;
+    if (file3) {
+      formData.append('BackgroundPicture', file3, file3.name);
+    }
+    return this.http.put(`${this.apiUrl}/Users/update`, formData);
+  }
 }

@@ -1,6 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import Swal from 'sweetalert2';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,10 @@ export class AdminService {
   constructor(private http: HttpClient) { }
   private apiUrl = 'https://localhost:7291/api';
 
+  getUserData(userId: number): Observable<any> {
+    const params = new HttpParams().set('userId', userId.toString());
+    return this.http.get(`${this.apiUrl}/Users/user`, { params });
+  }
   getAllUsers(): Observable<any>{
     return this.http.get(`${this.apiUrl}/Users`)
   }
@@ -43,4 +48,26 @@ export class AdminService {
     }
     return this.http.put(`${this.apiUrl}/Users/update`, formData)
   }
+
+  getPostCategories(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/PostCategory`);
+  }
+  addPostCategory(category: { CategoryName: string }) {
+    return this.http.post(`${this.apiUrl}/PostCategory`, category);
+  }
+  deleteCategory(id: number) {
+    return this.http.delete(`${this.apiUrl}/PostCategory/${id}`);
+  }
+  updateCategory(data: { id: number, categoryName: string }) {
+    return this.http.put(`${this.apiUrl}/PostCategory`, data);
+  }
+  getContact(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/ContactUs`);
+  }
+  
+  deleteContact(id: number) {
+    return this.http.delete(`${this.apiUrl}/ContactUs/${id}`);
+  }
+  
+
 }

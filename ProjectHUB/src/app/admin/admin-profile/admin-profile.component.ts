@@ -28,8 +28,55 @@ export class AdminProfileComponent {
     }
   }
 
-  cancelEdit() {
-    // Reload or reset logic
-    console.log('Edit canceled');
+
+
+  profilePreview: string | ArrayBuffer | null = null;
+backgroundPreview: string | ArrayBuffer | null = null;
+qrCodePreview: string | ArrayBuffer | null = null;
+
+passwordData = {
+  currentPassword: '',
+  newPassword: '',
+  confirmPassword: ''
+};
+
+onProfileFileSelected(event: any) {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = e => this.profilePreview = reader.result;
+    reader.readAsDataURL(file);
   }
+}
+
+onBackgroundFileSelected(event: any) {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = e => this.backgroundPreview = reader.result;
+    reader.readAsDataURL(file);
+  }
+}
+
+onQRCodeFileSelected(event: any) {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = e => this.qrCodePreview = reader.result;
+    reader.readAsDataURL(file);
+  }
+}
+
+changePassword(form: any) {
+  if (form.valid) {
+    if (this.passwordData.newPassword !== this.passwordData.confirmPassword) {
+      alert('New password and confirm password do not match.');
+      return;
+    }
+
+    // Call API here with passwordData
+    console.log('Change password data', this.passwordData);
+  }
+}
+
 }

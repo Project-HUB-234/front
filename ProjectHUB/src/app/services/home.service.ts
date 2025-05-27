@@ -141,6 +141,7 @@ export class HomeService {
       formData.append('BackgroundPicture', file3, file3.name);
     }
     return this.http.put(`${this.apiUrl}/Users/update`, formData);
+  }
   PostLikeCount(postId: number[]) {
     return this.http.post(`${this.apiUrl}/PostLikes/postLikeCounts`,postId);
   }
@@ -154,3 +155,4 @@ export class HomeService {
     return this.http.post(`${this.apiUrl}/ContactUs`,contact);
   }
 }
+

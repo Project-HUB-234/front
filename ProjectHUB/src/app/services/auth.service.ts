@@ -35,4 +35,14 @@ export class AuthService {
     return encrypted.toString();  // Base64 string
 }
 
+changePassword(passwordData: any): Observable<any> {
+
+  const params = new HttpParams()
+  .set('UserId', passwordData.userId)
+  .set('OldPassword', this.encrypt(passwordData.oldPassword))
+  .set('NewPassword', this.encrypt(passwordData.newPassword));
+
+  return this.http.put(`${this.apiUrl}/Login/update-password`, null, { params });
+}         
+
 }

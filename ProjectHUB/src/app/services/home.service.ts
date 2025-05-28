@@ -154,5 +154,17 @@ export class HomeService {
   addContact(contact: any) {
     return this.http.post(`${this.apiUrl}/ContactUs`,contact);
   }
+  categoriesCount(){
+    return this.http.get(`${this.apiUrl}/PostCategory/categoriesCount`);
+  }
+  contactUCount(){
+    return this.http.get(`${this.apiUrl}/ContactUs/contactUCount`);
+  }
+  postCount(){
+    return this.http.get(`${this.apiUrl}/Posts/postCount`);
+  }
+  userCount(){
+    return this.http.get(`${this.apiUrl}/Users/userCount`);
+  }
 }
 

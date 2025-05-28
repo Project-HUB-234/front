@@ -121,6 +121,17 @@ export class EditProfileComponent implements OnInit {
   }
 
   onSubmitPassword() {
+
+    if (this.newPassword !== this.confirmPassword) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'New password and confirm password do not match',
+        confirmButtonColor: '#d33', 
+      });
+      return;
+    }
+    
     const password = {
       oldPassword: this.currentPassword,
       newPassword: this.newPassword,

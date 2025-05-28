@@ -28,16 +28,15 @@
               <span>My Profile</span>
             </a>
 
-            <a mat-list-item>
-              <mat-icon matListIcon>group</mat-icon>
-              <span>Connections</span>
-            </a>
-
             <a mat-list-item routerLink="/updateprofile">
               <mat-icon matListIcon>edit</mat-icon>
               <span>Edit Information</span>
             </a>
 
+            <a mat-list-item routerLink="/contact">
+              <mat-icon matListIcon>contact_mail</mat-icon>
+              <span>Contact</span>
+            </a>
             <a mat-list-item (click)="logout()">
               <mat-icon matListIcon>logout</mat-icon>
               <span>Logout</span>
@@ -123,33 +122,38 @@
           </div>
         </mat-card>
 
-        <ng-container *ngIf="userPosts && userPosts.length > 0">
-          <mat-card class="post-card" *ngFor="let post of userPosts">
+        <ng-container *ngIf="filterdPosts && filterdPosts.length > 0">
+          <mat-card class="post-card" *ngFor="let post of filterdPosts">
             <!-- Post Header -->
             <div
               class="post-header d-flex justify-content-between align-items-start"
             >
-            <a [routerLink]="(userId === post?.userId) ? '/profile' : '/otherProfile/' + post?.userId">
-              <div class="d-flex">
-                
-                <img
-                  [src]="post?.user.profilePicture"
-                  alt="profile pic"
-                  class="post-avatar"
-                />
-             
-                <div class="post-user-info">
-                  <h3>{{ post?.user.firstName }} {{ post?.user.lastName }}</h3>
-                  <div class="post-meta">
-                    <span class="post-time">{{
-                      post.datePosted | timeago
-                    }}</span>
+              <a
+                [routerLink]="
+                  userId === post?.userId
+                    ? '/profile'
+                    : '/otherProfile/' + post?.userId
+                "
+              >
+                <div class="d-flex">
+                  <img
+                    [src]="post?.user.profilePicture"
+                    alt="profile pic"
+                    class="post-avatar"
+                  />
+
+                  <div class="post-user-info">
+                    <h3>
+                      {{ post?.user.firstName }} {{ post?.user.lastName }}
+                    </h3>
+                    <div class="post-meta">
+                      <span class="post-time">{{
+                        post.datePosted | timeago
+                      }}</span>
+                    </div>
                   </div>
                 </div>
-            
-
-              </div>
-            </a>
+              </a>
 
               <button
                 *ngIf="post?.user.userId === userId"
@@ -335,29 +339,36 @@
                 class="existing-comment"
                 *ngFor="let comment of post.comments"
               >
-              
                 <div class="comment-header d-flex justify-between align-center">
-                  <a [routerLink]="(userId === comment?.userId) ? '/profile' : '/otherProfile/' + comment?.userId">
-                  <div class="comment-left d-flex">
-                    
-                    <img
-                      [src]="comment?.user.profilePicture"
-                      alt="profilePicture"
-                      class="comment-avatar"
-                    />
-                    <div class="comment-user-info">
-                      <h4>
-                        {{ comment?.user.firstName }}
-                        {{ comment?.user.lastName }}
-                      </h4>
-                      <span class="comment-time">{{
-                        comment?.datePosted | timeago
-                      }}</span>
+                  <a
+                    [routerLink]="
+                      userId === comment?.userId
+                        ? '/profile'
+                        : '/otherProfile/' + comment?.userId
+                    "
+                  >
+                    <div class="comment-left d-flex">
+                      <img
+                        [src]="comment?.user.profilePicture"
+                        alt="profilePicture"
+                        class="comment-avatar"
+                      />
+                      <div class="comment-user-info">
+                        <h4>
+                          {{ comment?.user.firstName }}
+                          {{ comment?.user.lastName }}
+                        </h4>
+                        <span class="comment-time">{{
+                          comment?.datePosted | timeago
+                        }}</span>
+                      </div>
                     </div>
-                  
-                  </div>
-                </a>
-                  <button *ngIf="comment?.user.userId === userId" mat-icon-button [matMenuTriggerFor]="commentMenu">
+                  </a>
+                  <button
+                    *ngIf="comment?.user.userId === userId"
+                    mat-icon-button
+                    [matMenuTriggerFor]="commentMenu"
+                  >
                     <mat-icon>more_vert</mat-icon>
                   </button>
 
@@ -514,30 +525,30 @@
 
       <!-- Right Sidebar -->
       <div class="col-lg-3">
-        <mat-card class="search-sidebar-card p-2">
-          <mat-form-field appearance="outline" class="search-field full-width">
+        <mat-card class="search-sidebar-card p-3" style="max-width: 400px;">
+          <mat-form-field appearance="outline" class="search-field full-width mb-3">
             <mat-label>Search Category</mat-label>
-
             <input
               type="text"
               matInput
-              placeholder="Search..."
-              [(ngModel)]="searchQuery"
-              [matAutocomplete]="auto"
+              placeholder="Select category"
+              [(ngModel)]="selectedCategoryForSearch"
+              [matAutocomplete]="autoCategory"
+              
+              
             />
-
             <button
               mat-icon-button
               matSuffix
-              (click)="onSearch()"
-              [disabled]="!searchQuery"
-              matTooltip="Search"
+              *ngIf="selectedCategoryForSearch"
+              (click)="clearCategory()"
+              matTooltip="Clear category"
             >
-              <mat-icon>search</mat-icon>
+              <mat-icon>close</mat-icon>
             </button>
-
+        
             <mat-autocomplete
-              #auto="matAutocomplete"
+              #autoCategory="matAutocomplete"
               autoActiveFirstOption
               (optionSelected)="onCategorySelected($event.option.value)"
             >
@@ -549,7 +560,39 @@
               </mat-option>
             </mat-autocomplete>
           </mat-form-field>
+        
+          <mat-form-field appearance="outline" class="search-field full-width mb-3">
+            <mat-label>Search by Name</mat-label>
+            <input
+              type="text"
+              matInput
+              placeholder="Enter name"
+              [(ngModel)]="searchName"
+            />
+            <button
+              mat-icon-button
+              matSuffix
+              *ngIf="searchName"
+              (click)="searchName = ''"
+              matTooltip="Clear name"
+            >
+              <mat-icon>close</mat-icon>
+            </button>
+          </mat-form-field>
+        
+          <div class="d-flex justify-content-between">
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="onSearch()"
+              
+            >
+              Search
+            </button>
+            <button mat-button color="warn" (click)="onReset()">Reset</button>
+          </div>
         </mat-card>
+        
       </div>
     </div>
   </div>

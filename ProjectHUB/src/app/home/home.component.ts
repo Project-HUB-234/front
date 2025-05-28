@@ -40,7 +40,6 @@ export class HomeComponent implements OnInit {
  userId : number|undefined ;
  ngOnInit(): void {
     this.userId = Number(localStorage.getItem("userId"));
-     console.log(this.userId);
     if(this.userId){
      this.getUserData();
      this.getAllPosts();
@@ -55,7 +54,6 @@ userProfile: any = null;
     this.homeService.getUserData(this.userId!).subscribe((result:any)=>{
       if(result){
         this.userProfile= result;
-        console.log(this.userProfile);
       }
     },error=>{
       this.toastr.error("Something went wrong. Please try again.")
@@ -63,19 +61,27 @@ userProfile: any = null;
   }
   userPosts: any = null ;
      postsCount: number=0;
-
+     filterdPosts: any = null ;
     getAllPosts(): void {
       
     this.homeService.getAllPosts().subscribe(
       (result: any) => {
 
         if (result) {
-
+          
           this.userPosts = result
-          this.postsCount = result.userPosts;
           const postIds = this.userPosts.map((post:any) => post.postId);
           const commentIds =  this.userPosts.flatMap((post:any) => post.comments.map((c:any) => c.commentId));
-
+          this.filterdPosts = this.userPosts.filter((post: any) => 
+            (this.searchQuery ? post.categoryId === this.searchQuery : true) && 
+            (!this.searchName ? true : 
+                post.content.toLowerCase().includes(this.searchName.toLowerCase()) ||
+                post.user.email.toLowerCase().includes(this.searchName.toLowerCase()) ||
+                (post.user.firstName + " " + post.user.lastName).toLowerCase().includes(this.searchName.toLowerCase())
+            )
+        );
+          this.postsCount = result.userPosts;
+         
           this.postLikeCount(postIds);
           this.commentLikeCount(commentIds);
           this.UserPostLike();
@@ -92,28 +98,40 @@ userProfile: any = null;
   //Search 
     searchQuery = '';
  onSearch(): void {
-    console.log('Searching for:', this.searchQuery);
-    // Add your logic to fetch posts by this.searchQuery/category
+       this.getAllPosts();
   }
 
-  onCategorySelected(categoryName: string): void {
-    this.searchQuery = categoryName;
-    console.log('Category selected:', categoryName);
+  onCategorySelected(categoryName: any): void {
+    const selectedCategory = this.postCategories.find(
+      (category: any) => category.categoryName === categoryName
+    );
+    
+    this.searchQuery = selectedCategory?.categoryId || null;
   }
 
 
 postCategories: any[] = [];
 selectedCategory: any = null;
+searchName: string = '';
+selectedCategoryForSearch: any = null;
+
+
 onCategoryChange(value: any) {
-  console.log('Selected category:', value);
   this.selectedCategory = value; 
+}
+clearCategory() {
+  this.selectedCategoryForSearch = '';
+}
+onReset() {
+  this.selectedCategoryForSearch = '';
+  this.searchName = '';
+  this.getAllPosts();
 }
 
  getPostCategories(){
     this.homeService.getPostCategories().subscribe((result:any)=>{
       if(result){
         this.postCategories=result;
-        console.log(this.postCategories);
       }
     },error=>{
       this.toastr.error("Failed to get categories")

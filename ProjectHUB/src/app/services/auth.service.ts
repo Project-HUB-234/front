@@ -29,10 +29,16 @@ export class AuthService {
 
 
  encrypt(plainText: string): string {
-   const key = CryptoJS.enc.Utf8.parse("ProjectHub$^$#^@&^%1234567890123456"); 
-   const iv = CryptoJS.enc.Utf8.parse("ProjectHub$^$#^@&^%6543210987654321");  
-    const encrypted = CryptoJS.AES.encrypt(plainText, key, { iv: iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 });
-    return encrypted.toString();  // Base64 string
+  const key = CryptoJS.enc.Utf8.parse("12345678901234567890123456789012"); // 32 bytes
+  const iv = CryptoJS.enc.Utf8.parse("6543210987654321"); // 16 bytes
+
+  const encrypted = CryptoJS.AES.encrypt(plainText, key, {
+    iv: iv,
+    mode: CryptoJS.mode.CBC,
+    padding: CryptoJS.pad.Pkcs7,
+  });
+
+  return encrypted.toString(); // Base64
 }
 
 changePassword(passwordData: any): Observable<any> {
@@ -44,5 +50,8 @@ changePassword(passwordData: any): Observable<any> {
 
   return this.http.put(`${this.apiUrl}/Login/update-password`, null, { params });
 }         
+forgetPassword(email: string): Observable<any> {
+  return this.http.put(`${this.apiUrl}/Login/forget-password?email=${email}`, null);
+}
 
 }

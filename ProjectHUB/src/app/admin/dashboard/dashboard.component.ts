@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AdminService } from 'src/app/services/admin.service';
 import { HomeService } from 'src/app/services/home.service';
+declare var bootstrap: any;
 
 @Component({
   selector: 'app-dashboard',
@@ -74,7 +75,14 @@ filteredContacts: any[] = [];
     this.adminService.getContact().subscribe((data: any[]) => {
       this.contacts = data;
       this.filteredContacts = [...data];
-      console.log(this.contacts);
     });
+  }
+
+  selectedPost: any = null;
+
+  openPostModal(post: any) {
+    this.selectedPost = post;
+    const modal = new bootstrap.Modal(document.getElementById('postModal'));
+    modal.show();
   }
 }

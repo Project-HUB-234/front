@@ -3,87 +3,129 @@
 
   <!-- Stats Overview Cards -->
   <div class="row g-4 mb-5">
-    <div class="col-md-3">
-      <div class="card shadow-sm border-0">
+    <div class="col-md-3" *ngFor="let stat of [
+      { label: 'Categories', count: categoryCount, icon: 'bi-folder-fill', color: 'primary' },
+      { label: 'Contacts', count: totalContacts, icon: 'bi-envelope-fill', color: 'success' },
+      { label: 'Posts', count: totalPosts, icon: 'bi-journal-text', color: 'warning' },
+      { label: 'Users', count: totalUser, icon: 'bi-person-circle', color: 'secondary' }
+    ]">
+      <div class="card shadow-sm border-0 rounded-4">
         <div class="card-body text-center">
-          <h6 class="text-muted">Categories</h6>
-          <h2 class="text-primary">{{ categoryCount }}</h2>
-          <i class="bi bi-folder-fill text-primary display-5"></i>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="card shadow-sm border-0">
-        <div class="card-body text-center">
-          <h6 class="text-muted">Contacts</h6>
-          <h2 class="text-success">{{ totalContacts }}</h2>
-          <i class="bi bi-envelope-fill text-success display-5"></i>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="card shadow-sm border-0">
-        <div class="card-body text-center">
-          <h6 class="text-muted">Posts</h6>
-          <h2 class="text-warning">{{ totalPosts }}</h2>
-          <i class="bi bi-journal-text text-warning display-5"></i>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="card shadow-sm border-0">
-        <div class="card-body text-center">
-          <h6 class="text-muted">Users</h6>
-          <h2 class="text-secondary">{{ totalUser }}</h2>
-          <i class="bi bi-person-circle text-secondary display-5"></i>
+          <h6 class="text-muted">{{ stat.label }}</h6>
+          <h2 class="text-{{ stat.color }}">{{ stat.count }}</h2>
+          <i class="bi {{ stat.icon }} text-{{ stat.color }} display-5"></i>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Recent Activities Feed -->
-  <div class="card shadow-sm border-0">
-    <div class="card-header bg-primary text-white">
-      <h5 class="mb-0">Recent Posts</h5>
-    </div>
-    <ul class="list-group list-group-flush">
-      <li class="list-group-item" *ngFor="let post of userPosts">
-        <small class="text-muted">{{ post.datePosted | timeago}}</small>
-        <p class="mb-1">{{ post.content }}</p>
-      </li>
-      <li class="list-group-item text-center text-muted" *ngIf="!userPosts.length">
-        No recent post to show.
-      </li>
-    </ul>
+<!-- Recent Posts Card with Click-to-View -->
+<div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+  <div class="card-header bg-primary text-white">
+    <h5 class="mb-0">Recent Posts</h5>
   </div>
+  <div class="list-group list-group-flush">
+    <div
+      class="list-group-item py-3 list-group-item-action"
+      *ngFor="let post of userPosts.slice(0, 5)"
+      (click)="openPostModal(post)"
+      style="cursor: pointer;"
+    >
+      <div class="d-flex align-items-start gap-3">
+        <div class="flex-shrink-0">
+          <i class="bi bi-person-circle text-primary fs-2"></i>
+        </div>
+        <div class="flex-grow-1">
+          <div class="d-flex justify-content-between">
+            <strong>{{ post.user.firstName }} {{ post.user.lastName }}</strong>
+            <small class="text-muted">
+              <i class="bi bi-clock me-1"></i>{{ post.datePosted | timeago }}
+            </small>
+          </div>
+          <p class="mb-0 text-dark mt-1 text-truncate" style="max-width: 100%;">
+            {{ post.content }}
+          </p>
+        </div>
+      </div>
+    </div>
 
-  <div class="card shadow-sm border-0 mt-5">
-    <div class="card-header">
-      <h5>Contacts</h5>
+    <div class="list-group-item text-center text-muted py-3" *ngIf="!userPosts.length">
+      No recent posts to show.
+    </div>
+  </div>
+</div>
+
+
+<!-- Post Detail Modal -->
+<div
+  class="modal fade"
+  id="postModal"
+  tabindex="-1"
+  aria-labelledby="postModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content rounded-4">
+      <div class="modal-header text-white">
+        <h5 class="modal-title" id="postModalLabel">Post Details</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="selectedPost">
+          <h3 class="mb-2">
+            <i class="bi bi-person-circle me-1 text-primary"></i>
+            {{ selectedPost.user.firstName }} {{ selectedPost.user.lastName }}
+          </h3>
+          <small class="text-muted d-block mb-3">
+            <i class="bi bi-clock me-1"></i>{{ selectedPost.datePosted | timeago }}
+          </small>
+          <p>{{ selectedPost.content }}</p>
+          <img
+            *ngIf="selectedPost.attachments[0].attachmentPath"
+            [src]="selectedPost.attachments[0].attachmentPath"
+            alt="Post Image"
+            class="img-fluid rounded"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+  <!-- Contacts Table -->
+  <div class="card shadow-sm border-0 mt-5 rounded-4 overflow-hidden">
+    <div class="card-header bg-light">
+      <h5 class="mb-0">Recent Contacts</h5>
     </div>
     <div class="card-body p-0">
-      <table class="table table-striped mb-0">
+      <table class="table table-striped table-hover mb-0">
         <thead class="table-light">
           <tr>
-            <th>Title</th>
             <th>Email</th>
-            <th>Phone</th>
+            <th>Title</th>
+            <th>Message</th>
             <th>Date Added</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let contact of contacts">
-            <td>{{ contact.contactTitle }}</td>
+          <tr *ngFor="let contact of contacts.slice(0, 5)">
             <td>{{ contact.userEmail }}</td>
-            <td>{{ contact.contactMessage }}</td>
+            <td>{{ contact.contactTitle }}</td>
+            <td class="text-truncate" style="max-width: 250px;">{{ contact.contactMessage }}</td>
             <td>{{ contact.createdDate | timeago }}</td>
           </tr>
           <tr *ngIf="contacts.length === 0">
-            <td colspan="4" class="text-center text-muted">No contacts found.</td>
+            <td colspan="4" class="text-center text-muted py-3">No contacts found.</td>
           </tr>
         </tbody>
       </table>
     </div>
   </div>
-  
 </div>

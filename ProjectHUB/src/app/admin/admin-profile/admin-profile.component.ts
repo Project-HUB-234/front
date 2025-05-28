@@ -19,19 +19,6 @@ export class AdminProfileComponent implements OnInit {
     this.userId = Number(localStorage.getItem('userId'));
     this.getUserData();
   }
-  admin = {
-    FirstName: 'admin',
-    LastName: 'admin',
-    Email: 'admin@gmail.com',
-    PhoneNumber: '0123456789',
-    ProfilePicture: 'https://randomuser.me/api/portraits/men/1.jpg',
-    BackgroundPicture: 'https://images.unsplash.com/photo-1557683316-973673baf926',
-    Brif: 'admin',
-    DateJoined: new Date(),
-    QuickAccessQrcode: 'https://api.qrserver.com/v1/create-qr-code/?data=admin',
-    Address: 'admin',
-    Job: 'admin'
-  };
 
   onSaveEdit(form: NgForm) {
     if (form.valid) {
@@ -147,7 +134,12 @@ getUserData() {
 changePassword(form: any) {
   if (form.valid) {
     if (this.newPassword !== this.confirmPassword) {
-      alert('New password and confirm password do not match.');
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'New password and confirm password do not match',
+        confirmButtonColor: '#d33',
+      });
       return;
     }
     const password = {

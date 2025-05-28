@@ -20,20 +20,6 @@ export class EditProfileComponent implements OnInit {
       this.getUserData();
     }
   }
-  user = {
-    Email: 'user@example.com',
-    FirstName: 'John',
-    LastName: 'Doe',
-    ProfilePicture: '',
-    PhoneNumber: '',
-    Brif: '',
-    DateJoined: new Date('2023-01-01'),
-    QuickAccessQrcode: '',
-    BackgroundPicture: '',
-    Address: '',
-    Job: '',
-  };
-
 
     currentPassword= ''
     newPassword= ''
@@ -165,4 +151,6 @@ export class EditProfileComponent implements OnInit {
           });
         },
       });
-}}
+}
+
+}

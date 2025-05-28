@@ -22,6 +22,10 @@ export class HomeComponent implements OnInit {
   postId = 0;
   categoryId = 0;
 
+  filterText =""
+  filterCartegory =0
+
+
   constructor(private homeService : HomeService,private router: Router, private toastr:ToastrService ,public dialog: MatDialog,) {}
   @ViewChild('callEditPostDialog') EditPostDialog !: TemplateRef<any>;
    @ViewChild('callDeletePostDialog') DeletePostDialog!: TemplateRef<any>;

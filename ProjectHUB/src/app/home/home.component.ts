@@ -205,7 +205,10 @@ postPhoto() {
     userId: this.userId,
     PostPictures: this.selectedImageFile ? [this.selectedImageFile] : []
   };
-
+  this.postContent = '';
+  this.postedPhotos = [];
+  this.selectedImageFile = null;
+  this.selectedCategory = null;
   this.homeService.AddPost(post).subscribe({
     next: () => {
       Swal.fire({
@@ -216,10 +219,7 @@ postPhoto() {
         showConfirmButton: false
       });
       this.getAllPosts();
-      this.postContent = '';
-      this.postedPhotos = [];
-      this.selectedImageFile = null;
-      this.selectedCategory = null;
+
 
       const modalEl = document.getElementById('photoUploadModal');
       if (modalEl) {

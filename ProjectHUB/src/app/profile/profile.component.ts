@@ -185,7 +185,11 @@ export class ProfileComponent {
       userId: this.userId!.toString(),
       PostPictures: this.selectedImageFile ? [this.selectedImageFile] : []
     };
-
+    // Reset form
+    this.postContent = '';
+    this.postedPhotos = [];
+    this.selectedImageFile = null;
+    this.selectedCategory = null;
     this.homeService.AddPost(formData).subscribe({
       next: () => {
         Swal.fire({
@@ -196,11 +200,7 @@ export class ProfileComponent {
           showConfirmButton: false,
         });
 
-        // Reset form
-        this.postContent = '';
-        this.postedPhotos = [];
-        this.selectedImageFile = null;
-        this.selectedCategory = null;
+    
 
         // Refresh posts
         this.getUserPosts();

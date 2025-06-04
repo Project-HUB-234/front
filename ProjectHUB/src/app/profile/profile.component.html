@@ -75,7 +75,7 @@
 
                   <button type="button" class="btn text-white"
                     style="background-color: rgb(17,20,45);"
-                    (click)="postPhoto()">Post</button>
+                    (click)="postPhoto()" [disabled]="postContent.length === 0 || selectedCategory === null">Post</button>
                 </div>
               </div>
 
